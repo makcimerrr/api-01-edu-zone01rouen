@@ -16,7 +16,6 @@ const client = await createClient({
     access_token,
 });
 
-// Liste des projets
 const projects = [
     "0-shell",
     "Multiplayer-FPS",
@@ -40,6 +39,60 @@ const projects = [
 // Configurer CORS pour autoriser les requêtes de votre front-end sur localhost:3001
 app.use(cors({origin: 'http://localhost:3000'}));
 
+// Page d'accueil bidon
+app.get("/", (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="fr">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>API Home</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    text-align: center;
+                    margin: 0;
+                    padding: 0;
+                }
+                header {
+                    background: #333;
+                    color: white;
+                    padding: 1rem 0;
+                }
+                main {
+                    padding: 2rem;
+                }
+                footer {
+                    background: #f1f1f1;
+                    color: #333;
+                    position: fixed;
+                    bottom: 0;
+                    width: 100%;
+                    padding: 1rem;
+                }
+            </style>
+        </head>
+        <body>
+            <header>
+                <h1>Bienvenue sur l'API de Maxime Dubois</h1>
+            </header>
+            <main>
+                <p>Cette API fournit des informations pour des projets et la progression des promotions.</p>
+                <p>Routes disponibles :</p>
+                <ul>
+                    <li><code>/user-info</code> - Récupère les informations utilisateur</li>
+                    <li><code>/promotion-progress/:eventId</code> - Récupère la progression d'une promotion par eventId</li>
+                </ul>
+            </main>
+            <footer>
+                <p>&copy; 2025 Maxime Dubois</p>
+            </footer>
+        </body>
+        </html>
+    `);
+});
+
 app.get("/user-info", async (req, res) => {
     try {
         const query = `
@@ -58,7 +111,6 @@ app.get("/user-info", async (req, res) => {
     }
 });
 
-// Nouvelle route : GET avec eventId
 app.get("/promotion-progress/:eventId", async (req, res) => {
     const {eventId} = req.params;
 
