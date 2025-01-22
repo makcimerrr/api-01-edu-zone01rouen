@@ -36,10 +36,20 @@ const projects = [
     "Go-reloaded",
 ];
 
-// Configurer CORS pour autoriser les requêtes
-app.use(cors({origin: 'https://admin-dashboard-blue-one.vercel.app'}));
-app.use(cors({origin: 'localhost:3000'}));
+const allowedOrigins = [
+    'https://admin-dashboard-blue-one.vercel.app',
+    'http://localhost:3000',
+];
 
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    }
+}));
 // Page d'accueil bidon
 app.get("/", (req, res) => {
     res.send(`
