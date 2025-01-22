@@ -38,7 +38,6 @@ const projects = [
 
 const allowedOrigins = [
     'https://admin-dashboard-blue-one.vercel.app',
-    'http://localhost:3000',
 ];
 
 app.use(cors({
