@@ -36,8 +36,8 @@ const projects = [
     "Go-reloaded",
 ];
 
-// Configurer CORS pour autoriser les requêtes de votre front-end sur localhost:3001
-app.use(cors({origin: 'http://localhost:3000'}));
+// Configurer CORS pour autoriser les requêtes
+app.use(cors({origin: 'https://admin-dashboard-blue-one.vercel.app'}));
 
 // Page d'accueil bidon
 app.get("/", (req, res) => {
