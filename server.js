@@ -38,6 +38,7 @@ const projects = [
 
 // Configurer CORS pour autoriser les requêtes
 app.use(cors({origin: 'https://admin-dashboard-blue-one.vercel.app'}));
+app.use(cors({origin: 'localhost:3000'}));
 
 // Page d'accueil bidon
 app.get("/", (req, res) => {
