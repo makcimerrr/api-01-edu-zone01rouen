@@ -41,8 +41,12 @@ const projects = [
 const allowedOrigins = [
     'https://api-01-edu.vercel.app/',
     'https://admin-dashboard-blue-one.vercel.app',
-    'http://localhost:3000',
 ];
+
+app.use((req, res, next) => {
+    console.log('Request Origin:', req.headers.origin);
+    next();
+});
 
 app.use(cors({
     origin: function (origin, callback) {
