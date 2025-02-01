@@ -40,7 +40,8 @@ const projects = [
 
 const allowedOrigins = [
     'https://admin-dashboard-blue-one.vercel.app',
-    'https://api-01-edu.vercel.app'
+    'https://api-01-edu.vercel.app',
+    'http://localhost:3000',
 ];
 
 // Calculer le répertoire actuel (équivalent de __dirname)
@@ -70,6 +71,11 @@ const swaggerOptions = {
             version: '1.0.0',
             description: 'Une API pour récupérer des informations sur les utilisateurs et la progression des promotions.',
         },
+        security: [
+            {
+                BearerAuth: []
+            }
+        ],
         servers: [
             {
                 url: 'https://api-01-edu.vercel.app',
@@ -105,6 +111,12 @@ app.use(express.static(path.join(__dirname, 'public')));
  *     description: Routes for tracking promotion progress
  *   - name: Gitea User Info
  *     description: Routes for fetching Gitea user data
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  */
 
 /**
@@ -114,14 +126,6 @@ app.use(express.static(path.join(__dirname, 'public')));
  *     tags: [User Information]
  *     summary: Récupère les informations utilisateur
  *     description: Cette route retourne les informations de l'utilisateur connecté en utilisant le token passé dans l'en-tête.
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: Token d'authentification Bearer
- *         schema:
- *           type: string
- *           example: Bearer <user-token>
  *     responses:
  *       200:
  *         description: Informations sur l'utilisateur
@@ -130,12 +134,7 @@ app.use(express.static(path.join(__dirname, 'public')));
  *       500:
  *         description: Erreur interne du serveur
  */
-app.get("/user-info", async (req, res) => {
-    const token = req.headers['authorization']; // Récupère le token depuis les en-têtes de la requête
-
-    if (!token) {
-        return res.status(400).json({error: "Token manquant dans l'en-tête Authorization"});
-    }
+app.get("/user-info", checkToken, async (req, res) => {
     try {
         const query = `
             query {
@@ -175,13 +174,7 @@ app.get("/user-info", async (req, res) => {
  *       500:
  *         description: Erreur interne du serveur
  */
-app.get("/user-find/:login", async (req, res) => {
-    const token = req.headers['authorization']; // Récupère le token depuis les en-têtes de la requête
-
-    if (!token) {
-        return res.status(400).json({error: "Token manquant dans l'en-tête Authorization"});
-    }
-
+app.get("/user-find/:login", checkToken, async (req, res) => {
     const {login} = req.params;
 
     if (!login) {
@@ -237,13 +230,7 @@ app.get("/user-find/:login", async (req, res) => {
  *       500:
  *         description: Erreur interne du serveur
  */
-app.get("/promotion-progress/:eventId", async (req, res) => {
-    const token = req.headers['authorization']; // Récupère le token depuis les en-têtes de la requête
-
-    if (!token) {
-        return res.status(400).json({error: "Token manquant dans l'en-tête Authorization"});
-    }
-
+app.get("/promotion-progress/:eventId", checkToken, async (req, res) => {
     const {eventId} = req.params;
 
     if (!eventId) {
@@ -307,13 +294,7 @@ app.get("/promotion-progress/:eventId", async (req, res) => {
  *       500:
  *         description: Erreur interne du serveur
  */
-app.get("/user-gitea/:username", async (req, res) => {
-    const token = req.headers['authorization']; // Récupère le token depuis les en-têtes de la requête
-
-    if (!token) {
-        return res.status(400).json({error: "Token manquant dans l'en-tête Authorization"});
-    }
-
+app.get("/user-gitea/:username", checkToken, async (req, res) => {
     const {username} = req.params;
 
     const userUrl = `https://zone01normandie.org/git/api/v1/users/${username}`;
@@ -344,6 +325,21 @@ app.get("/user-gitea/:username", async (req, res) => {
         res.status(500).json({error: "Internal Server Error", details: error.message});
     }
 });
+
+// Middleware pour vérifier la présence du token
+function checkToken(req, res, next) {
+    const token = req.header('Authorization');
+
+    if (!token) {
+        return res.status(400).json({error: 'Token manquant ou invalide'});
+    }
+
+    // Si nécessaire, vous pouvez ajouter une logique pour vérifier la validité du token ici.
+
+    next(); // Si le token est présent, continuer la requête
+}
+
+app.use(checkToken); // Appliquer ce middleware à toutes les routes
 
 // Lancer le serveur
 app.listen(PORT, () => {
