@@ -200,6 +200,38 @@ app.get("/promotion-progress/:eventId", async (req, res) => {
     }
 });
 
+app.get("/user-gitea/:username", async (req, res) => {
+    const {username} = req.params;
+
+    const userUrl = `https://zone01normandie.org/git/api/v1/users/${username}`;
+    const subscriptionsUrl = `https://zone01normandie.org/git/api/v1/users/${username}/subscriptions`;
+
+    try {
+        const [userResponse, subscriptionsResponse] = await Promise.all([
+            fetch(userUrl, {
+                headers: {'Authorization': `Bearer ${access_token}`},
+            }),
+            fetch(subscriptionsUrl, {
+                headers: {'Authorization': `Bearer ${access_token}`},
+            }),
+        ]);
+
+        if (!userResponse.ok || !subscriptionsResponse.ok) {
+            throw new Error(`Gitea API error: User (${userResponse.status}) / Feeds (${subscriptionsResponse.status})`);
+        }
+
+        const [userData, subscriptionsData] = await Promise.all([
+            userResponse.json(),
+            subscriptionsResponse.json(),
+        ]);
+
+        res.json({user: userData, feeds: subscriptionsData});
+    } catch (error) {
+        console.error("Error fetching data from Gitea:", error);
+        res.status(500).json({error: "Internal Server Error", details: error.message});
+    }
+});
+
 // Lancer le serveur
 app.listen(PORT, () => {
     console.log(`Serveur en cours d'exécution sur http://localhost:${PORT}`);
