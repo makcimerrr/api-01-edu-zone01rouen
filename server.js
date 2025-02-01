@@ -39,9 +39,8 @@ const projects = [
 ];
 
 const allowedOrigins = [
-    'https://api-01-edu.vercel.app/',
     'https://admin-dashboard-blue-one.vercel.app',
-    /*'chrome-extension://lahhiofdgnbcgmemekkmjnpifojdaelb'*/
+    'https://api-01-edu.vercel.app'
 ];
 
 // Calculer le répertoire actuel (équivalent de __dirname)
