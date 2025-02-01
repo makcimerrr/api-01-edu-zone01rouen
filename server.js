@@ -330,14 +330,19 @@ app.get("/user-gitea/:username", checkToken, async (req, res) => {
 function checkToken(req, res, next) {
     const token = req.header('Authorization');
 
-    if (!token) {
-        return res.status(400).json({error: 'Token manquant ou invalide'});
+    // Vérifier si le token est manquant ou vide
+    if (!token || token.trim() === "") {
+        return res.status(400).json({error: 'Token manquant ou vide'});
     }
 
-    // Si nécessaire, vous pouvez ajouter une logique pour vérifier la validité du token ici.
+    // Vérifier si le token correspond à ACCESS_TOKEN défini dans l'environnement
+    if (token !== `Bearer ${process.env.ACCESS_TOKEN}`) {
+        return res.status(403).json({error: 'Token invalide'});
+    }
 
-    next(); // Si le token est présent, continuer la requête
+    next(); // Si le token est valide, continuer la requête
 }
+
 
 app.use(checkToken); // Appliquer ce middleware à toutes les routes
 
