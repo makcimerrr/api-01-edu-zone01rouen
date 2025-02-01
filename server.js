@@ -93,7 +93,8 @@ app.get("/", (req, res) => {
                 <ul>
                     <li><code>/user-info</code> - Récupère les informations utilisateur</li>
                     <li><code>/promotion-progress/:eventId</code> - Récupère la progression d'une promotion par eventId</li>
-                    <li><code>/user-find/:login</code> - Récupère les informations d'une utilisateurs grâce à son login</li>
+                    <li><code>/user-find/:login</code> - Récupère des informations de la plateforme de Zone01 d'un utilisateurs grâce à son login</li>
+                    <li><code>/user-gitea/:username</code> - Récupère des informations provenant de GITEA d'un utilisateurs grâce à son username</li>
                 </ul>
             </main>
             <footer>
