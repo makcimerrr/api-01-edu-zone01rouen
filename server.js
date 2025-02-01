@@ -59,7 +59,7 @@ app.use(cors({
     }
 }));
 
-app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
     customCss: `
         .swagger-ui .topbar {
             display: none;
