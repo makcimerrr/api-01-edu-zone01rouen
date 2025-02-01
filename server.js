@@ -38,6 +38,7 @@ const projects = [
 
 const allowedOrigins = [
     'https://admin-dashboard-blue-one.vercel.app',
+    'http://localhost:3000',
 ];
 
 app.use(cors({
@@ -143,12 +144,6 @@ app.get("/user-find/:login", async (req, res) => {
     email
     githubId
     discordId
-    discordToken{
-      accessToken
-      expiresAt
-      id
-      refreshToken
-    }
     discordDMChannelId
   }
 }`
