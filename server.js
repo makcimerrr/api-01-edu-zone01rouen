@@ -93,6 +93,7 @@ app.get("/", (req, res) => {
                 <ul>
                     <li><code>/user-info</code> - Récupère les informations utilisateur</li>
                     <li><code>/promotion-progress/:eventId</code> - Récupère la progression d'une promotion par eventId</li>
+                    <li><code>/user-find/:login</code> - Récupère les informations d'une utilisateurs grâce à son login</li>
                 </ul>
             </main>
             <footer>
@@ -118,6 +119,46 @@ app.get("/user-info", async (req, res) => {
     } catch (error) {
         console.error("Erreur lors de l'exécution de la requête :", error);
         res.status(500).json({error: "Une erreur est survenue."});
+    }
+});
+
+app.get("/user-find/:login", async (req, res) => {
+    const {login} = req.params;
+
+    if (!login) {
+        return res.status(400).json({
+            error: "Requête invalide : 'login' doit être fourni.",
+        });
+    }
+
+    const query = `query {
+  user(where: {login: {_eq: ${login} }}) {
+    id
+    login
+    firstName
+    lastName
+    auditRatio
+    auditsAssigned
+    campus
+    email
+    githubId
+    discordId
+    discordToken{
+      accessToken
+      expiresAt
+      id
+      refreshToken
+    }
+    discordDMChannelId
+  }
+}`
+
+    try {
+        const response = await client.run(query);
+        res.status(200).json(response);
+    } catch (error) {
+        console.error("Erreur GraphQL :", error.message);
+        res.status(500).json({error: error.message});
     }
 });
 
