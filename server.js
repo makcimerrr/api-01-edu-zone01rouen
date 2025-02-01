@@ -2,8 +2,8 @@ import express from 'express';
 import {createClient} from '@01-edu/api';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import swaggerUi from 'swagger-ui-express';
-import swagger from './swagger.js';  // Ajouter l'extension .js ici
+import swaggerJsdoc from 'swagger-jsdoc';
+import path from 'path';
 
 const app = express();
 const PORT = 3010;
@@ -41,13 +41,17 @@ const projects = [
 const allowedOrigins = [
     'https://api-01-edu.vercel.app/',
     'https://admin-dashboard-blue-one.vercel.app',
-    'chrome-extension://lahhiofdgnbcgmemekkmjnpifojdaelb'
+    /*'chrome-extension://lahhiofdgnbcgmemekkmjnpifojdaelb'*/
 ];
 
-app.use((req, res, next) => {
+// Calculer le répertoire actuel (équivalent de __dirname)
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+
+
+/*app.use((req, res, next) => {
     console.log('Request Origin:', req.headers.origin);
     next();
-});
+});*/
 
 app.use(cors({
     origin: function (origin, callback) {
@@ -59,8 +63,39 @@ app.use(cors({
     }
 }));
 
-app.use("/", swaggerUi.serve, swagger);
+const swaggerOptions = {
+    swaggerDefinition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'API de Maxime Dubois',
+            version: '1.0.0',
+            description: 'Une API pour récupérer des informations sur les utilisateurs et la progression des promotions.',
+        },
+        servers: [
+            {
+                url: 'https://api-01-edu.vercel.app',
+            },
+            {
+                url: 'http://localhost:3010',
+            },
+        ],
+    },
+    apis: ['./server.js']
+};
 
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+
+// Serve swagger.json via l'URL /swagger.json
+app.get('/swagger.json', (req, res) => {
+    res.json(swaggerDocs);
+});
+
+// Serve the index.html file when accessing the root URL (/)
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 /**
  * @swagger
@@ -315,26 +350,3 @@ app.get("/user-gitea/:username", async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Serveur en cours d'exécution sur http://localhost:${PORT}`);
 });
-
-const verifyToken = (req, res, next) => {
-    const token = req.headers['authorization']; // Récupère le token depuis les en-têtes de la requête
-
-    if (!token) {
-        return res.status(400).json({error: "Token manquant dans l'en-tête Authorization"});
-    }
-
-    // Tu peux ajouter ici une logique pour valider le token
-    // Exemple simple de vérification, tu peux étendre cette vérification selon tes besoins
-    if (token !== 'Bearer ' + process.env.ACCESS_TOKEN) {
-        return res.status(401).json({error: "Token invalide"});
-    }
-
-    // Si tout est ok, passe à la suite de la requête
-    next();
-};
-
-// Appliquer ce middleware sur toutes les routes où tu veux la vérification du token
-app.use("/user-info", verifyToken);
-app.use("/promotion-progress/:eventId", verifyToken);
-app.use("/user-find/:login", verifyToken);
-app.use("/user-gitea/:username", verifyToken);
