@@ -10,9 +10,6 @@ const swaggerDefinition = {
     },
     servers: [
         {
-            url: 'http://localhost:3010',
-        },
-        {
             url: 'https://api-01-edu.vercel.app',
         },
     ],
