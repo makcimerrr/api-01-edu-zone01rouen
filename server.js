@@ -39,6 +39,7 @@ const projects = [
 ];
 
 const allowedOrigins = [
+    'https://api-01-edu.vercel.app/',
     'https://admin-dashboard-blue-one.vercel.app',
 ];
 
