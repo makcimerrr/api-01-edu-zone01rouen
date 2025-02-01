@@ -217,7 +217,7 @@ app.get("/user-gitea/:username", async (req, res) => {
         ]);
 
         if (!userResponse.ok || !subscriptionsResponse.ok) {
-            throw new Error(`Gitea API error: User (${userResponse.status}) / Feeds (${subscriptionsResponse.status})`);
+            throw new Error(`Gitea API error: User (${userResponse.status}) / Subscriptions (${subscriptionsResponse.status})`);
         }
 
         const [userData, subscriptionsData] = await Promise.all([
@@ -225,7 +225,7 @@ app.get("/user-gitea/:username", async (req, res) => {
             subscriptionsResponse.json(),
         ]);
 
-        res.json({user: userData, feeds: subscriptionsData});
+        res.json({user: userData, subscriptions: subscriptionsData});
     } catch (error) {
         console.error("Error fetching data from Gitea:", error);
         res.status(500).json({error: "Internal Server Error", details: error.message});
