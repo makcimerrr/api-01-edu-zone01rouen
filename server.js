@@ -2,6 +2,8 @@ import express from 'express';
 import {createClient} from '@01-edu/api';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './swagger.js';
 
 const app = express();
 const PORT = 3010;
@@ -49,63 +51,55 @@ app.use(cors({
         }
     }
 }));
-// Page d'accueil bidon
-app.get("/", (req, res) => {
-    res.send(`
-        <!DOCTYPE html>
-        <html lang="fr">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>API Home</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    text-align: center;
-                    margin: 0;
-                    padding: 0;
-                }
-                header {
-                    background: #333;
-                    color: white;
-                    padding: 1rem 0;
-                }
-                main {
-                    padding: 2rem;
-                }
-                footer {
-                    background: #f1f1f1;
-                    color: #333;
-                    position: fixed;
-                    bottom: 0;
-                    width: 100%;
-                    padding: 1rem;
-                }
-            </style>
-        </head>
-        <body>
-            <header>
-                <h1>Bienvenue sur l'API de Maxime Dubois</h1>
-            </header>
-            <main>
-                <p>Cette API fournit des informations pour des projets et la progression des promotions.</p>
-                <p>Routes disponibles :</p>
-                <ul>
-                    <li><code>/user-info</code> - Récupère les informations utilisateur</li>
-                    <li><code>/promotion-progress/:eventId</code> - Récupère la progression d'une promotion par eventId</li>
-                    <li><code>/user-find/:login</code> - Récupère des informations de la plateforme de Zone01 d'un utilisateurs grâce à son login</li>
-                    <li><code>/user-gitea/:username</code> - Récupère des informations provenant de GITEA d'un utilisateurs grâce à son username</li>
-                </ul>
-            </main>
-            <footer>
-                <p>&copy; 2025 Maxime Dubois</p>
-            </footer>
-        </body>
-        </html>
-    `);
-});
 
+app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    customCss: `
+        .swagger-ui .topbar {
+            display: none;
+        }
+    `
+}));
+
+/**
+ * @swagger
+ * tags:
+ *   - name: User Information
+ *     description: Routes to retrieve user information
+ *   - name: Promotion Progress
+ *     description: Routes for tracking promotion progress
+ *   - name: Gitea User Info
+ *     description: Routes for fetching Gitea user data
+ */
+
+/**
+ * @swagger
+ * /user-info:
+ *   get:
+ *     tags: [User Information]
+ *     summary: Récupère les informations utilisateur
+ *     description: Cette route retourne les informations de l'utilisateur connecté en utilisant le token passé dans l'en-tête.
+ *     parameters:
+ *       - in: header
+ *         name: Authorization
+ *         required: true
+ *         description: Token d'authentification Bearer
+ *         schema:
+ *           type: string
+ *           example: Bearer <user-token>
+ *     responses:
+ *       200:
+ *         description: Informations sur l'utilisateur
+ *       400:
+ *         description: Token manquant ou invalide
+ *       500:
+ *         description: Erreur interne du serveur
+ */
 app.get("/user-info", async (req, res) => {
+    const token = req.headers['authorization']; // Récupère le token depuis les en-têtes de la requête
+
+    if (!token) {
+        return res.status(400).json({error: "Token manquant dans l'en-tête Authorization"});
+    }
     try {
         const query = `
             query {
@@ -123,7 +117,35 @@ app.get("/user-info", async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /user-find/{login}:
+ *   get:
+ *     tags: [User Information]
+ *     summary: Recherche un utilisateur par son login
+ *     description: Cette route retourne les informations d'un utilisateur spécifique en fonction de son login.
+ *     parameters:
+ *       - in: path
+ *         name: login
+ *         required: true
+ *         description: Login de l'utilisateur à rechercher
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Informations de l'utilisateur
+ *       400:
+ *         description: Requête invalide, login manquant
+ *       500:
+ *         description: Erreur interne du serveur
+ */
 app.get("/user-find/:login", async (req, res) => {
+    const token = req.headers['authorization']; // Récupère le token depuis les en-têtes de la requête
+
+    if (!token) {
+        return res.status(400).json({error: "Token manquant dans l'en-tête Authorization"});
+    }
+
     const {login} = req.params;
 
     if (!login) {
@@ -157,7 +179,35 @@ app.get("/user-find/:login", async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /promotion-progress/{eventId}:
+ *   get:
+ *     tags: [Promotion Progress]
+ *     summary: Récupère les progrès d'une promotion
+ *     description: Cette route retourne les informations sur les progrès d'une promotion spécifique en fonction de l'ID de l'événement.
+ *     parameters:
+ *       - in: path
+ *         name: eventId
+ *         required: true
+ *         description: ID de l'événement pour récupérer les progrès associés
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Progrès des utilisateurs dans la promotion
+ *       400:
+ *         description: Requête invalide, eventId manquant
+ *       500:
+ *         description: Erreur interne du serveur
+ */
 app.get("/promotion-progress/:eventId", async (req, res) => {
+    const token = req.headers['authorization']; // Récupère le token depuis les en-têtes de la requête
+
+    if (!token) {
+        return res.status(400).json({error: "Token manquant dans l'en-tête Authorization"});
+    }
+
     const {eventId} = req.params;
 
     if (!eventId) {
@@ -201,7 +251,33 @@ app.get("/promotion-progress/:eventId", async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /user-gitea/{username}:
+ *   get:
+ *     tags: [Gitea User Info]
+ *     summary: Récupère les informations d'un utilisateur sur Gitea
+ *     description: Cette route retourne les informations d'un utilisateur ainsi que ses abonnements sur Gitea.
+ *     parameters:
+ *       - in: path
+ *         name: username
+ *         required: true
+ *         description: Nom d'utilisateur Gitea
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Informations de l'utilisateur et abonnements
+ *       500:
+ *         description: Erreur interne du serveur
+ */
 app.get("/user-gitea/:username", async (req, res) => {
+    const token = req.headers['authorization']; // Récupère le token depuis les en-têtes de la requête
+
+    if (!token) {
+        return res.status(400).json({error: "Token manquant dans l'en-tête Authorization"});
+    }
+
     const {username} = req.params;
 
     const userUrl = `https://zone01normandie.org/git/api/v1/users/${username}`;
@@ -237,3 +313,26 @@ app.get("/user-gitea/:username", async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Serveur en cours d'exécution sur http://localhost:${PORT}`);
 });
+
+const verifyToken = (req, res, next) => {
+    const token = req.headers['authorization']; // Récupère le token depuis les en-têtes de la requête
+
+    if (!token) {
+        return res.status(400).json({error: "Token manquant dans l'en-tête Authorization"});
+    }
+
+    // Tu peux ajouter ici une logique pour valider le token
+    // Exemple simple de vérification, tu peux étendre cette vérification selon tes besoins
+    if (token !== 'Bearer ' + process.env.ACCESS_TOKEN) {
+        return res.status(401).json({error: "Token invalide"});
+    }
+
+    // Si tout est ok, passe à la suite de la requête
+    next();
+};
+
+// Appliquer ce middleware sur toutes les routes où tu veux la vérification du token
+app.use("/user-info", verifyToken);
+app.use("/promotion-progress/:eventId", verifyToken);
+app.use("/user-find/:login", verifyToken);
+app.use("/user-gitea/:username", verifyToken);
