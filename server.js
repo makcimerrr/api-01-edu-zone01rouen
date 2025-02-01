@@ -327,7 +327,7 @@ app.get("/user-gitea/:username", checkToken, async (req, res) => {
 });
 
 // Middleware pour vérifier la présence du token
-function checkToken(req, res, next) {
+async function checkToken(req, res, next) {
     const token = req.header('Authorization');
 
     // Vérifier si le token est manquant ou vide
@@ -335,12 +335,31 @@ function checkToken(req, res, next) {
         return res.status(400).json({error: 'Token manquant ou vide'});
     }
 
-    // Vérifier si le token correspond à ACCESS_TOKEN défini dans l'environnement
-    if (token !== `Bearer ${process.env.ACCESS_TOKEN}`) {
-        return res.status(403).json({error: 'Token invalide'});
-    }
+    // Extraire le token réel (après le mot "Bearer ")
+    const actualToken = token.replace('Bearer ', '');
 
-    next(); // Si le token est valide, continuer la requête
+    // Vérification du token via l'API Gitea de votre organisation
+    try {
+        const response = await fetch('https://zone01normandie.org/git/api/v1/user', {
+            headers: {
+                'Authorization': `Bearer ${actualToken}`,
+            },
+        });
+
+        // Si la réponse n'est pas OK, le token est invalide
+        if (!response.ok) {
+            return res.status(403).json({error: 'Token invalide'});
+        }
+
+        // Si la réponse est OK, le token est valide
+        const userData = await response.json();
+        console.log('Utilisateur authentifié:', userData);
+
+        next(); // Si le token est valide, continuer la requête
+    } catch (error) {
+        console.error('Erreur lors de la vérification du token:', error);
+        res.status(500).json({error: 'Erreur interne lors de la vérification du token'});
+    }
 }
 
 
