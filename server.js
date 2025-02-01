@@ -3,7 +3,7 @@ import {createClient} from '@01-edu/api';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
-import swaggerSpec from './swagger.js';
+import swagger from './swagger.js';  // Ajouter l'extension .js ici
 
 const app = express();
 const PORT = 3010;
@@ -59,13 +59,8 @@ app.use(cors({
     }
 }));
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-    customCss: `
-        .swagger-ui .topbar {
-            display: none;
-        }
-    `
-}));
+app.use("/", swaggerUi.serve, swagger);
+
 
 /**
  * @swagger
