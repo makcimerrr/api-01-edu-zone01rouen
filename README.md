@@ -12,6 +12,7 @@ Bienvenue dans le projet d'API développé par **Maxime Dubois**. Cette API vous
 - **CORS** : 🌍 Gérer les autorisations cross-origin
 - **dotenv** : 🌱 Gestion des variables d'environnement
 - **@01-edu/api** : 🧑‍💻 API spécifique pour l'intégration avec le système de gestion des projets
+- **Gitea** : 🔧 Gestion de l'API Gitea via le domaine de Zone01 en Administrateur pour récupérer les informations de nos apprenants
 
 ---
 
@@ -29,6 +30,12 @@ Bienvenue dans le projet d'API développé par **Maxime Dubois**. Cette API vous
 
 3. **`GET /promotion-progress/:eventId`**  
    📊 Récupère le progrès de la promotion spécifiée par `eventId` avec des détails sur chaque projet en cours dans la promotion.
+
+4. **`GET /user-find/:login`**
+   Récupère les informations Plateforme d'un utilisateur via son `username`.
+
+5. **`GET /user-gitea/:username`**
+   Récupère les informations Gitea d'un utilisateur spécifiée par son `username`.
 
 ---
 
