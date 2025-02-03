@@ -1,7 +1,7 @@
 // api.test.ts
 import {assertEquals} from "https://deno.land/std/testing/asserts.ts";
 import {createApp} from "https://deno.land/x/oak/mod.ts";
-import router from "../src/routes.ts";
+import router from "../src/route/routes.ts";
 
 Deno.test("GET /api/v1/users should return a list of users", async () => {
     const app = createApp();
