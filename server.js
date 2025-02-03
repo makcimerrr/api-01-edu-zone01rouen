@@ -44,9 +44,6 @@ const allowedOrigins = [
     'http://localhost:3000',
 ];
 
-// Calculer le répertoire actuel (équivalent de __dirname)
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-
 
 /*app.use((req, res, next) => {
     console.log('Request Origin:', req.headers.origin);
@@ -62,65 +59,63 @@ app.use(cors({
         }
     }
 }));
-
-const swaggerOptions = {
-    swaggerDefinition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'API de Maxime Dubois',
-            version: '1.0.0',
-            description: 'Une API pour récupérer des informations sur les utilisateurs et la progression des promotions.',
-        },
-        security: [
-            {
-                BearerAuth: []
-            }
-        ],
-        servers: [
-            {
-                url: 'https://api-01-edu.vercel.app',
-            },
-            {
-                url: 'http://localhost:3010',
-            },
-        ],
-    },
-    apis: ['./server.js']
-};
-
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
-
-// Serve swagger.json via l'URL /swagger.json
-app.get('/swagger.json', (req, res) => {
-    res.json(swaggerDocs);
+// Page d'accueil bidon
+app.get("/", (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="fr">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>API Home</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    text-align: center;
+                    margin: 0;
+                    padding: 0;
+                }
+                header {
+                    background: #333;
+                    color: white;
+                    padding: 1rem 0;
+                }
+                main {
+                    padding: 2rem;
+                }
+                footer {
+                    background: #f1f1f1;
+                    color: #333;
+                    position: fixed;
+                    bottom: 0;
+                    width: 100%;
+                    padding: 1rem;
+                }
+            </style>
+        </head>
+        <body>
+            <header>
+                <h1>Bienvenue sur l'API de Maxime Dubois</h1>
+            </header>
+            <main>
+                <p>Cette API fournit des informations pour des projets et la progression des promotions.</p>
+                <p>Routes disponibles :</p>
+                <ul>
+                    <li><code>/user-info</code> - Récupère les informations de tous les utilisateurs</li>
+                    <li><code>/promotion-progress/:eventId</code> - Récupère la progression d'une promotion par eventId</li>
+                    <li><code>/user-find/:login</code> - Récupère les informations Plateforme d'un utilisateur</li>
+                    <li><code>/user-gitea/:username</code> - Récupère les informations Gitea d'un utilisateur</li>
+                </ul>
+            </main>
+            <footer>
+                <p>&copy; 2025 Maxime Dubois</p>
+            </footer>
+        </body>
+        </html>
+    `);
 });
 
-// Serve the index.html file when accessing the root URL (/)
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-app.use(express.static(path.join(__dirname, 'public')));
-
 /**
- * @swagger
- * tags:
- *   - name: User Information
- *     description: Routes to retrieve user information
- *   - name: Promotion Progress
- *     description: Routes for tracking promotion progress
- *   - name: Gitea User Info
- *     description: Routes for fetching Gitea user data
- * components:
- *   securitySchemes:
- *     BearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
- */
-
-/**
- * @swagger
  * /user-info:
  *   get:
  *     tags: [User Information]
@@ -134,7 +129,7 @@ app.use(express.static(path.join(__dirname, 'public')));
  *       500:
  *         description: Erreur interne du serveur
  */
-app.get("/user-info", checkToken, async (req, res) => {
+app.get("/user-info", async (req, res) => {
     try {
         const query = `
             query {
@@ -153,7 +148,6 @@ app.get("/user-info", checkToken, async (req, res) => {
 });
 
 /**
- * @swagger
  * /user-find/{login}:
  *   get:
  *     tags: [User Information]
@@ -174,7 +168,7 @@ app.get("/user-info", checkToken, async (req, res) => {
  *       500:
  *         description: Erreur interne du serveur
  */
-app.get("/user-find/:login", checkToken, async (req, res) => {
+app.get("/user-find/:login", async (req, res) => {
     const {login} = req.params;
 
     if (!login) {
@@ -209,7 +203,6 @@ app.get("/user-find/:login", checkToken, async (req, res) => {
 });
 
 /**
- * @swagger
  * /promotion-progress/{eventId}:
  *   get:
  *     tags: [Promotion Progress]
@@ -230,7 +223,7 @@ app.get("/user-find/:login", checkToken, async (req, res) => {
  *       500:
  *         description: Erreur interne du serveur
  */
-app.get("/promotion-progress/:eventId", checkToken, async (req, res) => {
+app.get("/promotion-progress/:eventId", async (req, res) => {
     const {eventId} = req.params;
 
     if (!eventId) {
@@ -275,7 +268,6 @@ app.get("/promotion-progress/:eventId", checkToken, async (req, res) => {
 });
 
 /**
- * @swagger
  * /user-gitea/{username}:
  *   get:
  *     tags: [Gitea User Info]
@@ -288,6 +280,12 @@ app.get("/promotion-progress/:eventId", checkToken, async (req, res) => {
  *         description: Nom d'utilisateur Gitea
  *         schema:
  *           type: string
+ *       - in: header
+ *         name: token
+ *         required: true
+ *         description: Token d'accès admin Gitea
+ *         schema:
+ *           type: bearer
  *     responses:
  *       200:
  *         description: Informations de l'utilisateur et abonnements
@@ -296,30 +294,35 @@ app.get("/promotion-progress/:eventId", checkToken, async (req, res) => {
  */
 app.get("/user-gitea/:username", checkToken, async (req, res) => {
     const {username} = req.params;
+    const token = req.headers.authorization?.split(" ")[1]; // Récupère le token Bearer
+
+    if (!token || token === 'undefined') {
+        return res.status(401).json({error: "Unauthorized: Missing Bearer token"});
+    }
 
     const userUrl = `https://zone01normandie.org/git/api/v1/users/${username}`;
-    const subscriptionsUrl = `https://zone01normandie.org/git/api/v1/users/${username}/subscriptions`;
+    const heatmapUrl = `https://zone01normandie.org/git/api/v1/users/${username}/heatmap`;
 
     try {
-        const [userResponse, subscriptionsResponse] = await Promise.all([
+        const [userResponse, heatmapResponse] = await Promise.all([
             fetch(userUrl, {
-                headers: {'Authorization': `Bearer ${access_token}`},
+                headers: {'Authorization': `Bearer ${token}`},
             }),
-            fetch(subscriptionsUrl, {
-                headers: {'Authorization': `Bearer ${access_token}`},
+            fetch(heatmapUrl, {
+                headers: {'Authorization': `Bearer ${token}`},
             }),
         ]);
 
-        if (!userResponse.ok || !subscriptionsResponse.ok) {
-            throw new Error(`Gitea API error: User (${userResponse.status}) / Subscriptions (${subscriptionsResponse.status})`);
+        if (!userResponse.ok || !heatmapResponse.ok) {
+            throw new Error(`Gitea API error: User (${userResponse.status}) / Subscriptions (${heatmapResponse.status})`);
         }
 
-        const [userData, subscriptionsData] = await Promise.all([
+        const [userData, heatmapData] = await Promise.all([
             userResponse.json(),
-            subscriptionsResponse.json(),
+            heatmapResponse.json(),
         ]);
 
-        res.json({user: userData, subscriptions: subscriptionsData});
+        res.json({user: userData, heatmap: heatmapData});
     } catch (error) {
         console.error("Error fetching data from Gitea:", error);
         res.status(500).json({error: "Internal Server Error", details: error.message});
@@ -331,7 +334,7 @@ async function checkToken(req, res, next) {
     const token = req.header('Authorization');
 
     // Vérifier si le token est manquant ou vide
-    if (!token || token.trim() === "") {
+    if (!token || token.trim() === "" || token === 'undefined') {
         return res.status(400).json({error: 'Token manquant ou vide'});
     }
 
@@ -353,19 +356,20 @@ async function checkToken(req, res, next) {
 
         // Si la réponse est OK, le token est valide
         const userData = await response.json();
-        console.log('Utilisateur authentifié:', userData);
 
-        next(); // Si le token est valide, continuer la requête
+        if (userData.is_admin) {
+            return next();
+        }
+
+        return res.status(403).json({error: 'Access denied. Admins only.'});
     } catch (error) {
         console.error('Erreur lors de la vérification du token:', error);
         res.status(500).json({error: 'Erreur interne lors de la vérification du token'});
     }
 }
 
-
-app.use(checkToken); // Appliquer ce middleware à toutes les routes
-
 // Lancer le serveur
 app.listen(PORT, () => {
     console.log(`Serveur en cours d'exécution sur http://localhost:${PORT}`);
 });
+
