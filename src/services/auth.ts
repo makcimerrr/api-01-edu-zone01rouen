@@ -1,7 +1,10 @@
-import {storage} from "../config/storage.ts";
+import {storage} from
+
+c
+"../../config/storage.ts";
 import {fetchAPI} from "../utils/fetch.ts";
 import {decodeJWT} from "../utils/jwt.ts";
-import {CONFIG} from "../config/config.ts";
+import {CONFIG} from "../../config/config.ts";
 
 export const requestToken = async () => {
     const res = await fetchAPI(CONFIG.DOMAIN, `/api/auth/token?token=${CONFIG.ACCESS_TOKEN}`, {});

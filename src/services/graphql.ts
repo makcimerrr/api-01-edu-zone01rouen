@@ -1,7 +1,7 @@
-import {storage} from "../config/storage.ts";
+import {storage} from "../../config/storage.ts";
 import {requestToken, refreshToken, isExpired} from "./auth.ts";
 import {fetchAPI} from "../utils/fetch.ts";
-import {CONFIG} from "../config/config.ts";
+import {CONFIG} from "../../config/config.ts";
 
 export const getClient = async () => {
     let _pendingTokenQuery = requestToken();
