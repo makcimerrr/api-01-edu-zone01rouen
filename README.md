@@ -32,10 +32,10 @@ Bienvenue dans le projet d'API développé par **Maxime Dubois**. Cette API vous
    📊 Récupère le progrès de la promotion spécifiée par `eventId` avec des détails sur chaque projet en cours dans la promotion.
 
 4. **`GET /user-find/:login`**
-   Récupère les informations Plateforme d'un utilisateur via son `username`.
+   🧑🏼‍🎓 Récupère les informations Plateforme d'un utilisateur via son `username`.
 
 5. **`GET /user-gitea/:username`**
-   Récupère les informations Gitea d'un utilisateur spécifiée par son `username`.
+   📀 Récupère les informations Gitea d'un utilisateur spécifiée par son `username`.
 
 ---
 
