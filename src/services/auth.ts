@@ -1,7 +1,4 @@
-import {storage} from
-
-c
-"../../config/storage.ts";
+import {storage} from "../../config/storage.ts";
 import {fetchAPI} from "../utils/fetch.ts";
 import {decodeJWT} from "../utils/jwt.ts";
 import {CONFIG} from "../../config/config.ts";
