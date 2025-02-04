@@ -3,16 +3,12 @@ import {Router} from "../../deps.ts";
 import {
     API_BASE_PATH,
     API_VERSION,
-} from "../../config/config.ts"; // Import des constantes
-
+} from "../../config/config.ts";
 import {checkToken} from "../utils/token.ts"
-const apiVersion = "v1"; // Remplacer par la version dynamique souhaitée
-const apiModule = "api"; // Remplacer par l'API dynamique souhaitée
 
-// Utilisation de l'import dynamique
-const { getUserInfo, getUsers } = await import(`file:///src/src/api/v1/user.ts`);
-
-console.log(getUsers, getUserInfo);
+const { getUserInfo, getUsers } = await import(`file:///src/src/${API_BASE_PATH}/${API_VERSION}/user.ts`);
+const { getPromotionProgress } = await import(`file:///src/src/${API_BASE_PATH}/${API_VERSION}/promotion.ts`);
+const { getUserInfoFromGitea } = await import(`file:///src/src/${API_BASE_PATH}/${API_VERSION}/gitea.ts`);
 
 const router = new Router();
 
@@ -30,11 +26,9 @@ async function loadUserController() {
     }
 }
 
-/*async function loadPromotionController() {
+async function loadPromotionController() {
     try {
-        const promotionsController = await import(promotionsControllerPath);
-
-        router.get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students`, promotionsController.getPromotionProgress);
+        router.get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students`, getPromotionProgress);
     } catch (error) {
         console.error('Error loading promotion controller:', error);
     }
@@ -42,13 +36,11 @@ async function loadUserController() {
 
 async function loadGiteaController() {
     try {
-        const giteaController = await import(giteaControllerPath);
-
-        router.get(`/${API_BASE_PATH}/${API_VERSION}/gitea-info/:username`, checkToken, giteaController.getUserInfoFromGitea);
+        router.get(`/${API_BASE_PATH}/${API_VERSION}/gitea-info/:username`, checkToken, getUserInfoFromGitea);
     } catch (error) {
         console.error('Error loading gitea controller:', error);
     }
-}*/
+}
 
 // Route d'accueil de l'API
 router.get("/", (ctx: {
