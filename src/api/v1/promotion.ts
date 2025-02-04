@@ -12,34 +12,34 @@ export const getPromotionProgress = async (ctx: RouterContext) => {
         };
         return;
     }
-
-    const query = `
-    query {
-      progress(
-        where: {
-          _and: [
-            { object: { name: { _in: ${JSON.stringify(projects.map((p) => p.toLowerCase()))} } } },
-            { group: { status: { _in: [finished, audit, setup, working] } } },
-            { event: { id: { _eq: ${eventId} } } }
-          ]
-        }
-      ) {
-        user {
-          login
-        }
-        grade
-        group {
-          status
-          id
-        }
-        object {
-          name
-        }
-      }
-    }
-  `;
-
     try {
+        const client = await getClient();
+        const query = `
+        query {
+          progress(
+            where: {
+              _and: [
+                { object: { name: { _in: ${JSON.stringify(projects.map((p) => p.toLowerCase()))} } } },
+                { group: { status: { _in: [finished, audit, setup, working] } } },
+                { event: { id: { _eq: ${eventId} } } }
+              ]
+            }
+          ) {
+            user {
+              login
+            }
+            grade
+            group {
+              status
+              id
+            }
+            object {
+              name
+            }
+          }
+        }
+      `;
+
         const response = await client.run(query);
         ctx.response.status = 200;
         ctx.response.body = response;

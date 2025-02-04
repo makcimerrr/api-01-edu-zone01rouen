@@ -31,25 +31,25 @@ export const getUserInfo = async (ctx: RouterContext) => {
         };
         return;
     }
-
-    const query = `
-    query {
-      user(where: {login: {_eq: "${username}"}}) {
-        id
-        login
-        firstName
-        lastName
-        auditRatio
-        auditsAssigned
-        campus
-        email
-        githubId
-        discordId
-        discordDMChannelId
-      }
-    }`;
-
     try {
+        const client = await getClient();
+        const query = `
+        query {
+          user(where: {login: {_eq: "${username}"}}) {
+            id
+            login
+            firstName
+            lastName
+            auditRatio
+            auditsAssigned
+            campus
+            email
+            githubId
+            discordId
+            discordDMChannelId
+          }
+        }`;
+
         const response = await client.run(query);
         ctx.response.status = 200;
         ctx.response.body = response;
