@@ -1,0 +1,18 @@
+{
+    "tasks": {
+        "start": "deno run --allow-net --allow-read --allow-env src/server.ts"
+    },
+    "imports": {
+        "router": "https://deno.land/x/oak/mod.ts"
+    },
+    "compilerOptions": {
+        "strict": true
+    },
+    "lint": {
+        "rules": {
+            "include": [
+                "src/**/*.ts"
+            ]
+        }
+    }
+}
