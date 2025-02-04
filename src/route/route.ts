@@ -15,7 +15,7 @@ async function loadUserController() {
     // Routes pour les utilisateurs`
     router.get(`/${API_BASE_PATH}/${API_VERSION}/users`, usersController.getUsers)
         .get(`/${API_BASE_PATH}/${API_VERSION}/user-info/:username`, usersController.getUserInfo)
-        .get(`/${API_BASE_PATH}/${API_VERSION}/promotion-progress/:eventId`, promotionsController.getPromotionProgress)
+        .get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students`, promotionsController.getPromotionProgress)
         .get(`/${API_BASE_PATH}/${API_VERSION}/gitea-info/:username`, checkToken, giteaController.getUserInfoFromGitea)
     /*.get(`/${API_BASE_PATH}/${API_VERSION}/users/:id`, usersController.getUserById)
     .post(`/${API_BASE_PATH}/${API_VERSION}/users`, usersController.createUser)
