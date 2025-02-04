@@ -4,8 +4,13 @@ import {
     API_BASE_PATH,
     API_VERSION,
 } from "../../config/config.ts"; // Import des constantes
+
 import {checkToken} from "../utils/token.ts"
-import {getUserInfo, getUsers} from "../api/v1/user.ts";
+const apiVersion = "v1"; // Remplacer par la version dynamique souhaitée
+const apiModule = "api"; // Remplacer par l'API dynamique souhaitée
+
+// Utilisation de l'import dynamique
+const { getUserInfo, getUsers } = await import(`../${apiModule}/${apiVersion}/user.ts`);
 
 const router = new Router();
 
