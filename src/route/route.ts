@@ -8,10 +8,12 @@ const router = new Router();
 // Fonction asynchrone pour gérer l'importation dynamique des contrôleurs
 async function loadUserController() {
     try {
+        const base = API_BASE_PATH;
+        const version = API_VERSION;
         // Dynamique en fonction de la version
-        const usersController = await import(`../api/v1/user.ts`);
-        const promotionsController = await import(`../api/v1/promotion.ts`);
-        const giteaController = await import(`../api/v1/gitea.ts`);
+        const usersController = await import(`../${base}/${version}/user.ts`);
+        const promotionsController = await import(`../${base}/${version}/promotion.ts`);
+        const giteaController = await import(`../${base}/${version}/gitea.ts`);
 
         // Routes pour les utilisateurs`
         router.get(`/${API_BASE_PATH}/${API_VERSION}/users`, usersController.getUsers)
