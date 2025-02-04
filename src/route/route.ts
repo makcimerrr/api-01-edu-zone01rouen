@@ -17,7 +17,7 @@ async function loadUserController() {
         console.log(API_BASE_PATH);
         console.log(API_VERSION);
         const usersController = await import (`../${API_BASE_PATH}/${API_VERSION}/user.ts`)
-        console.log(usersController);
+        console.log("test", usersController);
         // Routes pour les utilisateurs
         router.get(`/${API_BASE_PATH}/${API_VERSION}/users`, usersController.getUsers)
             .get(`/${API_BASE_PATH}/${API_VERSION}/user-info/:username`, usersController.getUserInfo);
