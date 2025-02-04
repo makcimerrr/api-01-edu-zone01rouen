@@ -28,7 +28,7 @@ async function loadUserController() {
     }
 }
 
-async function loadPromotionController() {
+/*async function loadPromotionController() {
     try {
         const promotionsController = await import(promotionsControllerPath);
 
@@ -46,7 +46,7 @@ async function loadGiteaController() {
     } catch (error) {
         console.error('Error loading gitea controller:', error);
     }
-}
+}*/
 
 // Route d'accueil de l'API
 router.get("/", (ctx: {
@@ -61,7 +61,7 @@ router.get("/", (ctx: {
 });
 
 loadUserController().then(r => r);
-loadPromotionController().then(r => r);
-loadGiteaController().then(r => r);
+/*loadPromotionController().then(r => r);
+loadGiteaController().then(r => r);*/
 
 export default router;

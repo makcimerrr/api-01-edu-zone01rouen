@@ -9,6 +9,7 @@ export const CONFIG = {
     ACCESS_TOKEN: Deno.env.get("ACCESS_TOKEN")!,
 };
 
+/*
 export const usersControllerPath = `../${API_BASE_PATH}/${API_VERSION}/user.ts`;
 export const promotionsControllerPath = `../${API_BASE_PATH}/${API_VERSION}/promotion.ts`;
-export const giteaControllerPath = `../${API_BASE_PATH}/${API_VERSION}/gitea.ts`;
+export const giteaControllerPath = `../${API_BASE_PATH}/${API_VERSION}/gitea.ts`;*/
