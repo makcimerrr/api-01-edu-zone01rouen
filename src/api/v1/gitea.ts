@@ -1,7 +1,7 @@
 import {RouterContext} from "https://deno.land/x/oak/mod.ts";
 
 // Fonction pour récupérer les informations de l'utilisateur depuis Gitea
-export const getUserInfoFromGitea = async (ctx: RouterContext) => {
+const getUserInfoFromGitea = async (ctx: RouterContext) => {
     const {username} = ctx.params;
     const token = ctx.request.headers.get("Authorization")?.split(" ")[1]; // Récupère le token Bearer
 
@@ -39,3 +39,5 @@ export const getUserInfoFromGitea = async (ctx: RouterContext) => {
         ctx.response.body = {error: "Internal Server Error", details: error.message};
     }
 };
+
+export {getUserInfoFromGitea};

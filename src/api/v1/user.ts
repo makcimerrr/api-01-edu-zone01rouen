@@ -1,7 +1,7 @@
 import {RouterContext} from "../../../deps.ts";
 import {getClient} from "../../services/graphql.ts";
 
-export const getUsers = async (context: RouterContext) => {
+const getUsers = async (context: RouterContext) => {
     try {
         const client = await getClient();
         const query = `
@@ -21,7 +21,7 @@ export const getUsers = async (context: RouterContext) => {
     }
 };
 
-export const getUserInfo = async (ctx: RouterContext) => {
+const getUserInfo = async (ctx: RouterContext) => {
     const {username} = ctx.params;
 
     if (!username) {
@@ -102,3 +102,5 @@ export const deleteUser = (context: RouterContext) => {
         context.response.body = {message: "Utilisateur non trouvé"};
     }
 };*/
+
+export {getUsers, getUserInfo};
