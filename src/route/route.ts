@@ -55,7 +55,7 @@ router.get("/", (ctx: {
 });
 
 loadUserController().then(r => r);
-/*loadPromotionController().then(r => r);
-loadGiteaController().then(r => r);*/
+loadPromotionController().then(r => r);
+loadGiteaController().then(r => r);
 
 export default router;
