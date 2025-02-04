@@ -3,9 +3,6 @@ import {Router} from "../../deps.ts";
 import {
     API_BASE_PATH,
     API_VERSION,
-    usersControllerPath,
-    promotionsControllerPath,
-    giteaControllerPath
 } from "../../config/config.ts"; // Import des constantes
 import {checkToken} from "../utils/token.ts"
 
@@ -13,15 +10,11 @@ const router = new Router();
 
 async function loadUserController() {
     try {
-        /*const usersController = await import(usersControllerPath);*/
-        console.log(API_BASE_PATH);
-        console.log(API_VERSION);
-        console.log("actualization");
-        const usersController = await import (`../${API_BASE_PATH}/${API_VERSION}/user.ts`)
-        console.log("test", usersController);
+        const userControllerPath = `../${API_BASE_PATH}/${API_VERSION}/user.ts`;
+        const { getUsers, getUserInfo } = await import(userControllerPath);
         // Routes pour les utilisateurs
-        router.get(`/${API_BASE_PATH}/${API_VERSION}/users`, usersController.getUsers)
-            .get(`/${API_BASE_PATH}/${API_VERSION}/user-info/:username`, usersController.getUserInfo);
+        router.get(`/${API_BASE_PATH}/${API_VERSION}/users`, getUsers)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/user-info/:username`, getUserInfo);
         /*.get(`/${API_BASE_PATH}/${API_VERSION}/users/:id`, usersController.getUserById)
         .post(`/${API_BASE_PATH}/${API_VERSION}/users`, usersController.createUser)
         .put(`/${API_BASE_PATH}/${API_VERSION}/users/:id`, usersController.updateUser)
