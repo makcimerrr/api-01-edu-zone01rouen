@@ -1,6 +1,6 @@
 // routes.ts
 import {Router} from "../../deps.ts";
-import {API_BASE_PATH, API_VERSION} from "../../config/config.ts"; // Import des constantes
+import {BASE_PATH, VERSION_ACTUAL} from "../../config/config.ts"; // Import des constantes
 import {checkToken} from "../utils/token.ts"
 
 const router = new Router();
@@ -8,8 +8,8 @@ const router = new Router();
 // Fonction asynchrone pour gérer l'importation dynamique des contrôleurs
 async function loadUserController() {
     try {
-        const base = API_BASE_PATH;
-        const version = API_VERSION;
+        const base = BASE_PATH;
+        const version = VERSION_ACTUAL;
         // Dynamique en fonction de la version
         const usersController = await import(`../${base}/${version}/user.ts`);
         const promotionsController = await import(`../${base}/${version}/promotion.ts`);
