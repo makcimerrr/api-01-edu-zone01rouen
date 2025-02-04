@@ -8,10 +8,11 @@ const router = new Router();
 async function loadUserController() {
     // Dynamique en fonction de la version
     const usersController = await import(`../${API_BASE_PATH}/${API_VERSION}/user.ts`);
+    const promotionsController = await import(`../${API_BASE_PATH}/${API_VERSION}/promotion.ts`);
 
     // Routes pour les utilisateurs`
     router.get(`/${API_BASE_PATH}/${API_VERSION}/users`, usersController.getUsers)
-    router.get(`/${API_BASE_PATH}/${API_VERSION}/promotion-progress/:eventId`, getPromotionProgress);
+    router.get(`/${API_BASE_PATH}/${API_VERSION}/promotion-progress/:eventId`, promotionsController.getPromotionProgress);
     /*.get(`/${API_BASE_PATH}/${API_VERSION}/users/:id`, usersController.getUserById)
     .post(`/${API_BASE_PATH}/${API_VERSION}/users`, usersController.createUser)
     .put(`/${API_BASE_PATH}/${API_VERSION}/users/:id`, usersController.updateUser)
