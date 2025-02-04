@@ -10,7 +10,7 @@ const router = new Router();
 
 async function loadUserController() {
     try {
-        const userControllerPath = `../${API_BASE_PATH}/${API_VERSION}/user.ts`;
+        const userControllerPath = new URL(`../${API_BASE_PATH}/${API_VERSION}/user.ts`, import.meta.url).pathname;
         const { getUsers, getUserInfo } = await import(userControllerPath);
         // Routes pour les utilisateurs
         router.get(`/${API_BASE_PATH}/${API_VERSION}/users`, getUsers)
