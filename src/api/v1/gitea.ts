@@ -1,3 +1,4 @@
+// @ts-ignore
 import {RouterContext} from "https://deno.land/x/oak/mod.ts";
 
 // Fonction pour récupérer les informations de l'utilisateur depuis Gitea
@@ -34,9 +35,9 @@ const getUserInfoFromGitea = async (ctx: RouterContext) => {
         ctx.response.status = 200;
         ctx.response.body = {user: userData, heatmap: heatmapData};
     } catch (error) {
-        console.error("Error fetching data from Gitea:", error.message);
+        console.error("Error fetching data from Gitea:", error);
         ctx.response.status = 500;
-        ctx.response.body = {error: "Internal Server Error", details: error.message};
+        ctx.response.body = {error: "Internal Server Error", details: error};
     }
 };
 

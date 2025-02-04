@@ -5,9 +5,10 @@ import {
     API_VERSION,
 } from "../../config/config.ts";
 import {checkToken} from "../utils/token.ts"
-import {getUserInfo, getUsers} from "api/v1/user.ts";
-import {getPromotionProgress} from "api/v1/promotion.ts";
-import {getUserInfoFromGitea} from "api/v1/gitea.ts";
+
+import { getUserInfo, getUsers } from "../api/v1/user.ts";
+import { getPromotionProgress } from "../api/v1/promotion.ts";
+import { getUserInfoFromGitea } from "../api/v1/gitea.ts";
 
 const router = new Router();
 
