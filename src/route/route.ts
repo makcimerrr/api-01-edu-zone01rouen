@@ -5,14 +5,12 @@ import {
     API_VERSION,
 } from "../../config/config.ts"; // Import des constantes
 import {checkToken} from "../utils/token.ts"
+import {getUserInfo, getUsers} from "../api/v1/user.ts";
 
 const router = new Router();
 
 async function loadUserController() {
     try {
-        const userControllerPath = new URL(`../../${API_BASE_PATH}/${API_VERSION}/user.ts`, import.meta.url).href;
-        const { getUsers, getUserInfo } = await import(userControllerPath);
-
         // Routes pour les utilisateurs
         router.get(`/${API_BASE_PATH}/${API_VERSION}/users`, getUsers)
             .get(`/${API_BASE_PATH}/${API_VERSION}/user-info/:username`, getUserInfo);
