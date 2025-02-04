@@ -9,12 +9,14 @@ async function loadUserController() {
     // Dynamique en fonction de la version
     const usersController = await import(`../${API_BASE_PATH}/${API_VERSION}/user.ts`);
 
-    // Routes pour les utilisateurs
+    // Routes pour les utilisateurs`
     router.get(`/${API_BASE_PATH}/${API_VERSION}/users`, usersController.getUsers)
+    router.get(`/${API_BASE_PATH}/${API_VERSION}/promotion-progress/:eventId`, getPromotionProgress);
     /*.get(`/${API_BASE_PATH}/${API_VERSION}/users/:id`, usersController.getUserById)
     .post(`/${API_BASE_PATH}/${API_VERSION}/users`, usersController.createUser)
     .put(`/${API_BASE_PATH}/${API_VERSION}/users/:id`, usersController.updateUser)
-    .delete(`/${API_BASE_PATH}/${API_VERSION}/users/:id`, usersController.deleteUser)*/;
+    .delete(`/${API_BASE_PATH}/${API_VERSION}/users/:id`, usersController.deleteUser)*/
+    ;
 }
 
 loadUserController(); // Appel de la fonction pour charger le contrôleur
