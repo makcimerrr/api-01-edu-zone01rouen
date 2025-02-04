@@ -13,8 +13,9 @@ const router = new Router();
 
 async function loadUserController() {
     try {
-        const usersController = await import(usersControllerPath);
+        /*const usersController = await import(usersControllerPath);*/
 
+        const usersController = await import (`../${API_BASE_PATH}/${API_VERSION}/user.ts`)
         // Routes pour les utilisateurs
         router.get(`/${API_BASE_PATH}/${API_VERSION}/users`, usersController.getUsers)
             .get(`/${API_BASE_PATH}/${API_VERSION}/user-info/:username`, usersController.getUserInfo);
