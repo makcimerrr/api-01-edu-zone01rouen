@@ -1,23 +1,23 @@
 // routes.ts
 import {Router} from "../../deps.ts";
-import {API_BASE_PATH, API_VERSION} from "../../config/config.ts"; // Import des constantes
+import {
+    API_BASE_PATH,
+    API_VERSION,
+    usersControllerPath,
+    promotionsControllerPath,
+    giteaControllerPath
+} from "../../config/config.ts"; // Import des constantes
 import {checkToken} from "../utils/token.ts"
 
 const router = new Router();
 
-// Fonction asynchrone pour gérer l'importation dynamique des contrôleurs
 async function loadUserController() {
     try {
-        // Dynamique en fonction de la version
-        const usersController = await import(`../api/v1/user.ts`);
-        const promotionsController = await import(`../api/v1/promotion.ts`);
-        const giteaController = await import(`../api/v1/gitea.ts`);
+        const usersController = await import(usersControllerPath);
 
-        // Routes pour les utilisateurs`
+        // Routes pour les utilisateurs
         router.get(`/${API_BASE_PATH}/${API_VERSION}/users`, usersController.getUsers)
-            .get(`/${API_BASE_PATH}/${API_VERSION}/user-info/:username`, usersController.getUserInfo)
-            .get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students`, promotionsController.getPromotionProgress)
-            .get(`/${API_BASE_PATH}/${API_VERSION}/gitea-info/:username`, checkToken, giteaController.getUserInfoFromGitea);
+            .get(`/${API_BASE_PATH}/${API_VERSION}/user-info/:username`, usersController.getUserInfo);
         /*.get(`/${API_BASE_PATH}/${API_VERSION}/users/:id`, usersController.getUserById)
         .post(`/${API_BASE_PATH}/${API_VERSION}/users`, usersController.createUser)
         .put(`/${API_BASE_PATH}/${API_VERSION}/users/:id`, usersController.updateUser)
@@ -29,7 +29,7 @@ async function loadUserController() {
 
 async function loadPromotionController() {
     try {
-        const promotionsController = await import(`../api/v1/promotion.ts`);
+        const promotionsController = await import(promotionsControllerPath);
 
         router.get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students`, promotionsController.getPromotionProgress);
     } catch (error) {
@@ -39,7 +39,7 @@ async function loadPromotionController() {
 
 async function loadGiteaController() {
     try {
-        const giteaController = await import(`../api/v1/gitea.ts`);
+        const giteaController = await import(giteaControllerPath);
 
         router.get(`/${API_BASE_PATH}/${API_VERSION}/gitea-info/:username`, checkToken, giteaController.getUserInfoFromGitea);
     } catch (error) {
