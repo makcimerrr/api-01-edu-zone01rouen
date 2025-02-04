@@ -1,6 +1,6 @@
 // server.ts
 // @ts-ignore
-import { oakCors } from "https://deno.land/x/oak_cors/mod.ts";
+import { oakCors } from "https://deno.land/x/cors/mod.ts";
 import {Application, send} from "../deps.ts";
 import router from "./route/route.ts";
 
