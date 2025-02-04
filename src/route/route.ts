@@ -10,7 +10,9 @@ const apiVersion = "v1"; // Remplacer par la version dynamique souhaitée
 const apiModule = "api"; // Remplacer par l'API dynamique souhaitée
 
 // Utilisation de l'import dynamique
-const { getUserInfo, getUsers } = await import(`../${apiModule}/${apiVersion}/user.ts`);
+const { getUserInfo, getUsers } = await import(`file:///api-01-edu/src/api/v1/user.ts`);
+
+console.log(getUsers, getUserInfo);
 
 const router = new Router();
 
