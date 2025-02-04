@@ -25,8 +25,8 @@ données de projet, telles que les informations utilisateurs et les progrès de 
    Cette route permet d'obtenir un tableau d'objets représentant les utilisateurs du système. Chaque objet contient les
    informations suivantes :
 
-   - **`id`** : Identifiant unique de l'utilisateur
-   - **`login`** : Le nom d'utilisateur (ou identifiant de connexion)
+    - **`id`** : Identifiant unique de l'utilisateur
+    - **`login`** : Le nom d'utilisateur (ou identifiant de connexion)
 
    > Réponse :
    ```json
@@ -44,6 +44,122 @@ données de projet, telles que les informations utilisateurs et les progrès de 
        ]
      }
    }
+   ```
+   **Code de statut** : `200 OK`
+
+2. **`GET /user-info/:username`**
+   🧑‍💻 Récupère les informations d'un utilisateur depuis la plateforme Zone01.
+
+   Cette route permet de récupérer les données d'un utilisateur à partir de son `username` (identifiant) sur la
+   plateforme Zone01.
+
+   > Réponse :
+   ```json
+    {
+        "user": [
+            {
+                "id": 123,
+                "login": "example",
+                "firstName": "John",
+                "lastName": "Doe",
+                "auditRatio": 0.551059615204684,
+                "auditsAssigned": 1,
+                "campus": "rouen",
+                "email": "john.doe@example.com",
+                "githubId": 1234,
+                "discordId": null,
+                "discordDMChannelId": null
+            }
+        ]
+    }
+   ```
+   **Code de statut** : `200 OK`
+
+3. **`GET /gitea-info/:username`**
+   🚀 Récupère les informations d'un utilisateur depuis Gitea et son heatmap.
+
+   Cette route permet de récupérer les données de l'utilisateur sur Gitea (utilisant le même `username` que sur la
+   plateforme Zone01), ainsi que les informations sur son heatmap.
+
+   **Note** : Un token d'authentification (`Bearer token`) est requis pour accéder à cette route.
+
+   > Réponse :
+   ```json
+   {
+    "user": {
+        "id": 123,
+        "login": "example",
+        "full_name": "John Doe",
+        "email": "john.doe@example.com",
+        "avatar_url": "https://zone01normandie.org/git/avatars/0c6851068fae19ad95",
+        "language": "en-US",
+        "is_admin": false,
+        "last_login": "2025-01-22T18:44:11Z",
+        "created": "2022-12-09T10:34:50Z",
+        "restricted": false,
+        "active": true,
+        "prohibit_login": false,
+        "location": "",
+        "website": "",
+        "description": "",
+        "visibility": "public",
+        "followers_count": 3,
+        "following_count": 1,
+        "starred_repos_count": 2,
+        "username": "example"
+    },
+    "heatmap": [
+        {
+            "timestamp": 1734604200,
+            "contributions": 1
+        },
+        {
+            "timestamp": 1734616800,
+            "contributions": 2
+        }
+      ]
+    }
+   ```
+   **Code de statut** : `200 OK`
+
+4. **`GET /promotion-progress/:eventId`**
+   📊 Récupère l'état de la progression d'une promotion en fonction de l'`eventId`.
+
+   Cette route permet d'obtenir les informations sur la progression des étudiants d'une promotion spécifique (identifiée
+   par `eventId`), en se basant sur les projets et les groupes associés à l'événement.
+
+   > Réponse :
+   ```json
+   {
+    "progress": [
+        {
+            "user": {
+                "login": "example"
+            },
+            "grade": 1.6639999999999997,
+            "group": {
+                "status": "finished",
+                "id": 123
+            },
+            "object": {
+                "name": "ascii-art-web"
+            }
+        },
+        {
+            "user": {
+                "login": "example2"
+            },
+            "grade": 1.8239999999999998,
+            "group": {
+                "status": "working",
+                "id": 456
+            },
+            "object": {
+                "name": "ascii-art-web"
+            }
+        }
+      ]
+    }
    ```
    **Code de statut** : `200 OK`
 
