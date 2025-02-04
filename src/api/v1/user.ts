@@ -21,6 +21,45 @@ export const getUsers = async (context: RouterContext) => {
     }
 };
 
+export const getUserInfo = async (ctx: RouterContext) => {
+    const {username} = ctx.params;
+
+    if (!username) {
+        ctx.response.status = 400;
+        ctx.response.body = {
+            error: "Requête invalide : 'username' doit être fourni.",
+        };
+        return;
+    }
+
+    const query = `
+    query {
+      user(where: {login: {_eq: "${username}"}}) {
+        id
+        login
+        firstName
+        lastName
+        auditRatio
+        auditsAssigned
+        campus
+        email
+        githubId
+        discordId
+        discordDMChannelId
+      }
+    }`;
+
+    try {
+        const response = await client.run(query);
+        ctx.response.status = 200;
+        ctx.response.body = response;
+    } catch (error) {
+        console.error("Erreur GraphQL :", error.message);
+        ctx.response.status = 500;
+        ctx.response.body = {error: error.message};
+    }
+};
+
 /*export const getUserById = (context: RouterContext) => {
     const {id} = context.params;
     const user = users.find((user) => user.id === parseInt(id));
