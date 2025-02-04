@@ -7,12 +7,5 @@
     },
     "compilerOptions": {
         "strict": true
-    },
-    "lint": {
-        "rules": {
-            "include": [
-                "src/**/*.ts"
-            ]
-        }
     }
 }
