@@ -9,9 +9,9 @@ const router = new Router();
 async function loadUserController() {
     try {
         // Dynamique en fonction de la version
-        const usersController = await import(`../${API_BASE_PATH}/${API_VERSION}/user.ts`);
-        const promotionsController = await import(`../${API_BASE_PATH}/${API_VERSION}/promotion.ts`);
-        const giteaController = await import(`../${API_BASE_PATH}/${API_VERSION}/gitea.ts`);
+        const usersController = await import(`../api/v1/user.ts`);
+        const promotionsController = await import(`../api/v1/promotion.ts`);
+        const giteaController = await import(`../api/v1/gitea.ts`);
 
         // Routes pour les utilisateurs`
         router.get(`/${API_BASE_PATH}/${API_VERSION}/users`, usersController.getUsers)
