@@ -23,10 +23,44 @@ async function loadUserController() {
         .put(`/${API_BASE_PATH}/${API_VERSION}/users/:id`, usersController.updateUser)
         .delete(`/${API_BASE_PATH}/${API_VERSION}/users/:id`, usersController.deleteUser)*/
     } catch (error) {
-        console.error('Error loading controllers:', error);
+        console.error('Error loading user controller:', error);
     }
 }
 
-loadUserController().then(r => r); // Appel de la fonction pour charger le contrôleur
+async function loadPromotionController() {
+    try {
+        const promotionsController = await import(`../api/v1/promotion.ts`);
+
+        router.get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students`, promotionsController.getPromotionProgress);
+    } catch (error) {
+        console.error('Error loading promotion controller:', error);
+    }
+}
+
+async function loadGiteaController() {
+    try {
+        const giteaController = await import(`../api/v1/gitea.ts`);
+
+        router.get(`/${API_BASE_PATH}/${API_VERSION}/gitea-info/:username`, checkToken, giteaController.getUserInfoFromGitea);
+    } catch (error) {
+        console.error('Error loading gitea controller:', error);
+    }
+}
+
+// Route d'accueil de l'API
+router.get("/", (ctx: {
+    response: { body: { message: string; documentation: string; status: string; version: string; }; };
+}) => {
+    ctx.response.body = {
+        message: "Bienvenue sur l'API 01 Edu!",
+        documentation: "https://zone01normandie.org/docs",
+        status: "OK",
+        version: API_VERSION,
+    };
+});
+
+loadUserController().then(r => r);
+loadPromotionController().then(r => r);
+loadGiteaController().then(r => r);
 
 export default router;
