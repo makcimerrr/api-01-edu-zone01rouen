@@ -5,6 +5,10 @@
     "moduleResolution": "node",
     "strict": true,
     "allowImportingTsExtensions": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "paths": {
+      "*": ["src/*"]
+    }
   }
 }
