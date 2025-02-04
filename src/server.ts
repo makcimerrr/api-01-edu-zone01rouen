@@ -1,8 +1,15 @@
 // server.ts
+// @ts-ignore
+import { oakCors } from "https://deno.land/x/oak_cors/mod.ts";
 import {Application, send} from "../deps.ts";
 import router from "./route/route.ts";
 
 const app = new Application();
+
+// Enable CORS for the specified origin
+app.use(oakCors({
+    origin: "https://admin-dashboard-blue-one.vercel.app"
+}));
 
 // Route pour servir le fichier index.html et style.css
 app.use(async (ctx: { request: { url: { pathname: string; }; }; }, next: () => any) => {
