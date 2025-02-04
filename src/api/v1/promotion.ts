@@ -1,6 +1,6 @@
 import {RouterContext} from "https://deno.land/x/oak/mod.ts";
 import {getClient} from "../../services/graphql.ts";
-import projects from "../../services/projects.ts"
+import {projects} from "../../services/projects.ts"
 
 export const getPromotionProgress = async (ctx: RouterContext) => {
     const {eventId} = ctx.params;
