@@ -163,6 +163,12 @@ données de projet, telles que les informations utilisateurs et les progrès de 
    ```
    **Code de statut** : `200 OK`
 
+4. **`GET /user-find/:login`**
+   🧑🏼‍🎓 Récupère les informations Plateforme d'un utilisateur via son `username`.
+
+5. **`GET /user-gitea/:username`**
+   📀 Récupère les informations Gitea d'un utilisateur spécifiée par son `username`.
+
 ---
 
 ## ⚙️ Installation
