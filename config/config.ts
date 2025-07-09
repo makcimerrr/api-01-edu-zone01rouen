@@ -1,6 +1,7 @@
 // config.ts
 import "https://deno.land/x/dotenv/load.ts";
 
+export const DATABASE_URL = Deno.env.get("DATABASE_URL")
 export const API_VERSION = "v1";
 export const API_BASE_PATH = "api";
 

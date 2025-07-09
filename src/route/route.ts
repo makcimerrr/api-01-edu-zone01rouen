@@ -6,9 +6,15 @@ import {
 } from "../../config/config.ts";
 import {checkToken} from "../utils/token.ts"
 
-import { getUserInfo, getUsers } from "../api/v1/user.ts";
-import { getPromotionProgress } from "../api/v1/promotion.ts";
-import { getUserInfoFromGitea } from "../api/v1/gitea.ts";
+import {getUserInfo, getUsers} from "../api/v1/user.ts";
+import {getPromotionProgress} from "../api/v1/promotion.ts";
+import {getUserInfoFromGitea} from "../api/v1/gitea.ts";
+import {
+    getDiscordConfig,
+    getDiscordTechnologies,
+    getForbiddenSchools,
+    getFullDiscordConfig, getJobQueries
+} from "../api/v1/discord.ts";
 
 const router = new Router();
 
@@ -42,6 +48,18 @@ async function loadGiteaController() {
     }
 }
 
+async function loadDiscordController() {
+    try {
+        router.get(`/${API_BASE_PATH}/${API_VERSION}/discord/technologies`, getDiscordTechnologies)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/discord/:name/config`, getDiscordConfig)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/discord/config/full`, getFullDiscordConfig)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/discord/forbidden-schools`, getForbiddenSchools)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/discord/job-queries`, getJobQueries);
+    } catch (error) {
+        console.error('Error loading discord controller:', error);
+    }
+}
+
 // Route d'accueil de l'API
 router.get("/", (ctx: {
     response: { body: { message: string; documentation: string; status: string; version: string; }; };
@@ -57,5 +75,6 @@ router.get("/", (ctx: {
 loadUserController().then(r => r);
 loadPromotionController().then(r => r);
 loadGiteaController().then(r => r);
+loadDiscordController().then(r => r);
 
 export default router;
