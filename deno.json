@@ -3,7 +3,9 @@
         "start": "deno run --allow-net --allow-read --allow-env src/server.ts"
     },
     "imports": {
-        "router": "https://deno.land/x/oak/mod.ts"
+        "router": "https://deno.land/x/oak/mod.ts",
+        "drizzle-orm": "npm:drizzle-orm",
+        "pg": "npm:pg"
     },
     "compilerOptions": {
         "strict": true
