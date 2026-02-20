@@ -207,7 +207,7 @@ ACCESS_TOKEN=your-access-token
 Pour démarrer le serveur, utilisez la commande suivante :
 
 ```bash
-deno run --allow-net --allow-env --allow-read src/server.ts
+deno run --env-file=.env --allow-net --allow-env --allow-read src/server.ts
 ```
 
 Cela lancera l'API avec les permissions nécessaires pour accéder au réseau et aux variables d'environnement.
