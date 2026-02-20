@@ -7,7 +7,7 @@ import {
 import {checkToken} from "../utils/token.ts"
 
 import {getUserInfo, getUsers} from "../api/v1/user.ts";
-import {getPromotionProgress} from "../api/v1/promotion.ts";
+import {getPromotionProgress, getPromotionsHandler} from "../api/v1/promotion.ts";
 import {getUserInfoFromGitea} from "../api/v1/gitea.ts";
 import {
     getDiscordConfig,
@@ -35,6 +35,7 @@ async function loadUserController() {
 async function loadPromotionController() {
     try {
         router.get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students`, getPromotionProgress);
+        router.get(`/${API_BASE_PATH}/${API_VERSION}/promotions`, getPromotionsHandler);
     } catch (error) {
         console.error('Error loading promotion controller:', error);
     }

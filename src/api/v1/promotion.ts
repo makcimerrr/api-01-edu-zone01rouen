@@ -2,6 +2,21 @@
 import {RouterContext} from "https://deno.land/x/oak/mod.ts";
 import {getClient} from "../../services/graphql.ts";
 import {projects} from "../../services/projects.ts"
+import {PromotionService} from "../../services/promotion.service.ts";
+
+const service = new PromotionService();
+
+export async function getPromotionsHandler(ctx: RouterContext) {
+    try {
+        const promotions = await service.getActivePromotions();
+        ctx.response.status = 200;
+        ctx.response.body = promotions;
+    } catch (error) {
+        console.error(error);
+        ctx.response.status = 500;
+        ctx.response.body = {error: "Internal Server Error"};
+    }
+}
 
 const getPromotionProgress = async (ctx: RouterContext) => {
     const {eventId} = ctx.params;
@@ -51,4 +66,4 @@ const getPromotionProgress = async (ctx: RouterContext) => {
     }
 };
 
-export { getPromotionProgress };
+export {getPromotionProgress};
