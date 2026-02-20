@@ -34,7 +34,7 @@ import {
     getPromoConfigHandler,
     getPromoConfigsHandler,
     updatePromoConfigHandler
-} from "api/v1/promo_config.ts";
+} from "../api/v1/promo_config.ts";
 
 const router = new Router();
 
