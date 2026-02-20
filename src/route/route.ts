@@ -117,5 +117,6 @@ loadPromotionController().then(r => r);
 loadGiteaController().then(r => r);
 loadDiscordController().then(r => r);
 loadProjectsController().then(r => r);
+loadHolidaysController().then(r => r);
 
 export default router;
