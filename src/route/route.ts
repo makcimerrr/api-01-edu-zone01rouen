@@ -22,6 +22,13 @@ import {
     getProjectsHandler,
     updateProjectHandler
 } from "../api/v1/projects.ts";
+import {
+    createHolidayHandler,
+    deleteHolidayHandler,
+    getHolidayHandler,
+    getHolidaysHandler,
+    updateHolidayHandler
+} from "../api/v1/holidays.ts";
 
 const router = new Router();
 
@@ -66,6 +73,18 @@ async function loadGiteaController() {
         router.get(`/${API_BASE_PATH}/${API_VERSION}/gitea-info/:username`, checkToken, getUserInfoFromGitea);
     } catch (error) {
         console.error('Error loading gitea controller:', error);
+    }
+}
+
+async function loadHolidaysController() {
+    try {
+        router.get(`/${API_BASE_PATH}/${API_VERSION}/holidays`, getHolidaysHandler)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/holidays/:id`, getHolidayHandler)
+            .post(`/${API_BASE_PATH}/${API_VERSION}/holidays`, createHolidayHandler)
+            .put(`/${API_BASE_PATH}/${API_VERSION}/holidays/:id`, updateHolidayHandler)
+            .delete(`/${API_BASE_PATH}/${API_VERSION}/holidays/:id`, deleteHolidayHandler);
+    } catch (error) {
+        console.error('Error loading holidays controller:', error);
     }
 }
 
