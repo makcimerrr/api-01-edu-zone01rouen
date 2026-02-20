@@ -29,6 +29,12 @@ import {
     getHolidaysHandler,
     updateHolidayHandler
 } from "../api/v1/holidays.ts";
+import {
+    createPromoConfigHandler, deletePromoConfigHandler,
+    getPromoConfigHandler,
+    getPromoConfigsHandler,
+    updatePromoConfigHandler
+} from "api/v1/promo_config.ts";
 
 const router = new Router();
 
@@ -49,7 +55,12 @@ async function loadUserController() {
 async function loadPromotionController() {
     try {
         router.get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students`, getPromotionProgress)
-            .get(`/${API_BASE_PATH}/${API_VERSION}/promotions`, getPromotionsHandler);
+            .get(`/${API_BASE_PATH}/${API_VERSION}/promotions`, getPromotionsHandler)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/promo-configs`, getPromoConfigsHandler)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/promo-configs/:key`, getPromoConfigHandler)
+            .post(`/${API_BASE_PATH}/${API_VERSION}/promo-configs`, createPromoConfigHandler)
+            .put(`/${API_BASE_PATH}/${API_VERSION}/promo-configs/:key`, updatePromoConfigHandler)
+            .delete(`/${API_BASE_PATH}/${API_VERSION}/promo-configs/:key`, deletePromoConfigHandler);
     } catch (error) {
         console.error('Error loading promotion controller:', error);
     }
