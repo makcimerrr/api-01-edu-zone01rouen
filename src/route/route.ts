@@ -15,6 +15,13 @@ import {
     getForbiddenSchools,
     getFullDiscordConfig, getJobQueries
 } from "../api/v1/discord.ts";
+import {
+    createProjectHandler,
+    deleteProjectHandler,
+    getProjectHandler,
+    getProjectsHandler,
+    updateProjectHandler
+} from "../api/v1/projects.ts";
 
 const router = new Router();
 
@@ -34,12 +41,25 @@ async function loadUserController() {
 
 async function loadPromotionController() {
     try {
-        router.get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students`, getPromotionProgress);
-        router.get(`/${API_BASE_PATH}/${API_VERSION}/promotions`, getPromotionsHandler);
+        router.get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students`, getPromotionProgress)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/promotions`, getPromotionsHandler);
     } catch (error) {
         console.error('Error loading promotion controller:', error);
     }
 }
+
+async function loadProjectsController() {
+    try {
+        router.get(`/${API_BASE_PATH}/${API_VERSION}/projects`, getProjectsHandler)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/projects/:id`, getProjectHandler)
+            .post(`/${API_BASE_PATH}/${API_VERSION}/projects`, createProjectHandler)
+            .put(`/${API_BASE_PATH}/${API_VERSION}/projects/:id`, updateProjectHandler)
+            .delete(`/${API_BASE_PATH}/${API_VERSION}/projects/:id`, deleteProjectHandler);
+    } catch (error) {
+        console.error('Error loading projects controller:', error);
+    }
+}
+
 
 async function loadGiteaController() {
     try {
@@ -77,5 +97,6 @@ loadUserController().then(r => r);
 loadPromotionController().then(r => r);
 loadGiteaController().then(r => r);
 loadDiscordController().then(r => r);
+loadProjectsController().then(r => r);
 
 export default router;
