@@ -48,6 +48,7 @@ const getPromotionProgress = async (ctx: RouterContext) => {
             group {
               status
               id
+              captainLogin
             }
             object {
               name
