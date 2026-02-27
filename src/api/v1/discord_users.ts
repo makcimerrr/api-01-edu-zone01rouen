@@ -16,7 +16,7 @@ export async function getDiscordUserHandler(ctx: any) {
 }
 
 export async function upsertDiscordUserHandler(ctx: any) {
-    const body = await ctx.request.body().value;
+    const body = await ctx.request.body.json();
     const user = await service.upsertDiscordUser(body);
     ctx.response.status = 200;
     ctx.response.body = user;
