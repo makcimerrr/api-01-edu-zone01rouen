@@ -35,6 +35,12 @@ import {
     getPromoConfigsHandler,
     updatePromoConfigHandler
 } from "../api/v1/promo_config.ts";
+import {
+    deleteDiscordUserHandler,
+    getDiscordUserHandler,
+    getDiscordUsersHandler,
+    upsertDiscordUserHandler
+} from "../api/v1/discord_users.ts";
 
 const router = new Router();
 
@@ -105,7 +111,11 @@ async function loadDiscordController() {
             .get(`/${API_BASE_PATH}/${API_VERSION}/discord/:name/config`, getDiscordConfig)
             .get(`/${API_BASE_PATH}/${API_VERSION}/discord/config/full`, getFullDiscordConfig)
             .get(`/${API_BASE_PATH}/${API_VERSION}/discord/forbidden-schools`, getForbiddenSchools)
-            .get(`/${API_BASE_PATH}/${API_VERSION}/discord/job-queries`, getJobQueries);
+            .get(`/${API_BASE_PATH}/${API_VERSION}/discord/job-queries`, getJobQueries)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/discord-users`, getDiscordUsersHandler)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/discord-users/:login`, getDiscordUserHandler)
+            .put(`/${API_BASE_PATH}/${API_VERSION}/discord-users`, upsertDiscordUserHandler)
+            .delete(`/${API_BASE_PATH}/${API_VERSION}/discord-users/:login`, deleteDiscordUserHandler);
     } catch (error) {
         console.error('Error loading discord controller:', error);
     }
