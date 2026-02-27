@@ -16,7 +16,7 @@ export async function getPromoConfigHandler(ctx: any) {
 }
 
 export async function createPromoConfigHandler(ctx: any) {
-    const body = await ctx.request.body().value;
+    const body = await ctx.request.body.json();
     const config = await service.createConfig(body);
     ctx.response.status = 201;
     ctx.response.body = config;
@@ -24,7 +24,7 @@ export async function createPromoConfigHandler(ctx: any) {
 
 export async function updatePromoConfigHandler(ctx: any) {
     const key = ctx.params.key;
-    const body = await ctx.request.body().value;
+    const body = await ctx.request.body.json();
     const config = await service.updateConfig(key, body);
     ctx.response.status = 200;
     ctx.response.body = config;

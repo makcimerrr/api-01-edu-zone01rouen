@@ -16,7 +16,7 @@ export async function getProjectHandler(ctx: any) {
 }
 
 export async function createProjectHandler(ctx: any) {
-    const body = await ctx.request.body().value;
+    const body = await ctx.request.body.json();
     const project = await service.createProject(body);
     ctx.response.status = 201;
     ctx.response.body = project;
@@ -24,7 +24,7 @@ export async function createProjectHandler(ctx: any) {
 
 export async function updateProjectHandler(ctx: any) {
     const id = Number(ctx.params.id);
-    const body = await ctx.request.body().value;
+    const body = await ctx.request.body.json();
     const project = await service.updateProject(id, body);
     ctx.response.status = 200;
     ctx.response.body = project;
