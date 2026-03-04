@@ -49,6 +49,14 @@ const getPromotionProgress = async (ctx: RouterContext) => {
               status
               id
               captainLogin
+              createdAt
+              startedWorkingAt
+              auditors {
+                auditedAt
+              }
+              results {
+                createdAt
+              }
             }
             object {
               name
