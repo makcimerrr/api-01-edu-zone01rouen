@@ -43,6 +43,7 @@ import {
 } from "../api/v1/discord_users.ts";
 import {getToadSessionsHandler} from "../api/v1/toad.ts";
 import {getPiscineProgressHandler} from "../api/v1/piscine.ts";
+import {getAdditionalPromotionProgress} from "../api/v1/additional.ts";
 
 const router = new Router();
 
@@ -144,6 +145,14 @@ async function loadToadController() {
     }
 }
 
+async function loadAdditionalController() {
+    try {
+        router.get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students/additionals`, getAdditionalPromotionProgress);
+    } catch (error) {
+        console.error('Error loading additional controller:', error);
+    }
+}
+
 async function loadPiscineController() {
     try {
         router.get(`/${API_BASE_PATH}/${API_VERSION}/piscine/progress`, getPiscineProgressHandler);
@@ -159,6 +168,7 @@ loadDiscordController().then(r => r);
 loadProjectsController().then(r => r);
 loadHolidaysController().then(r => r);
 loadToadController().then(r => r);
+loadAdditionalController().then(r => r);
 loadPiscineController().then(r => r);
 
 export default router;
