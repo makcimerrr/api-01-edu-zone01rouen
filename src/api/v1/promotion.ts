@@ -43,6 +43,8 @@ const getPromotionProgress = async (ctx: RouterContext) => {
           ) {
             user {
               login
+              firstName
+              lastName
             }
             grade
             group {
