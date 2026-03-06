@@ -7,7 +7,7 @@ import {
 import {checkToken} from "../utils/token.ts"
 
 import {getUserInfo, getUsers} from "../api/v1/user.ts";
-import {getPromotionProgress, getPromotionsHandler} from "../api/v1/promotion.ts";
+import {getPromotionProgress, getPromotionsHandler, getOptionalPromotionProgress} from "../api/v1/promotion.ts";
 import {getUserInfoFromGitea} from "../api/v1/gitea.ts";
 import {
     getDiscordConfig,
@@ -61,6 +61,7 @@ async function loadUserController() {
 async function loadPromotionController() {
     try {
         router.get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students`, getPromotionProgress)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students/optionals`, getOptionalPromotionProgress)
             .get(`/${API_BASE_PATH}/${API_VERSION}/promotions`, getPromotionsHandler)
             .get(`/${API_BASE_PATH}/${API_VERSION}/promo-configs`, getPromoConfigsHandler)
             .get(`/${API_BASE_PATH}/${API_VERSION}/promo-configs/:key`, getPromoConfigHandler)
