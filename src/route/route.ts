@@ -41,6 +41,8 @@ import {
     getDiscordUsersHandler,
     upsertDiscordUserHandler
 } from "../api/v1/discord_users.ts";
+import {getToadSessionsHandler} from "../api/v1/toad.ts";
+import {getPiscineProgressHandler} from "../api/v1/piscine.ts";
 
 const router = new Router();
 
@@ -134,11 +136,29 @@ router.get("/", (ctx: {
     };
 });
 
+async function loadToadController() {
+    try {
+        router.get(`/${API_BASE_PATH}/${API_VERSION}/toad/sessions`, getToadSessionsHandler);
+    } catch (error) {
+        console.error('Error loading toad controller:', error);
+    }
+}
+
+async function loadPiscineController() {
+    try {
+        router.get(`/${API_BASE_PATH}/${API_VERSION}/piscine/progress`, getPiscineProgressHandler);
+    } catch (error) {
+        console.error('Error loading piscine controller:', error);
+    }
+}
+
 loadUserController().then(r => r);
 loadPromotionController().then(r => r);
 loadGiteaController().then(r => r);
 loadDiscordController().then(r => r);
 loadProjectsController().then(r => r);
 loadHolidaysController().then(r => r);
+loadToadController().then(r => r);
+loadPiscineController().then(r => r);
 
 export default router;
