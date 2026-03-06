@@ -7,30 +7,30 @@ import {PromotionService} from "../../services/promotion.service.ts";
 const service = new PromotionService();
 
 export async function getPromotionsHandler(ctx: RouterContext) {
-    try {
-        const promotions = await service.getActivePromotions();
-        ctx.response.status = 200;
-        ctx.response.body = promotions;
-    } catch (error) {
-        console.error(error);
-        ctx.response.status = 500;
-        ctx.response.body = {error: "Internal Server Error"};
-    }
+  try {
+    const promotions = await service.getActivePromotions();
+    ctx.response.status = 200;
+    ctx.response.body = promotions;
+  } catch (error) {
+    console.error(error);
+    ctx.response.status = 500;
+    ctx.response.body = {error: "Internal Server Error"};
+  }
 }
 
 const getPromotionProgress = async (ctx: RouterContext) => {
-    const {eventId} = ctx.params;
+  const {eventId} = ctx.params;
 
-    if (!eventId) {
-        ctx.response.status = 400;
-        ctx.response.body = {
-            error: "Requête invalide : 'eventId' doit être fourni.",
-        };
-        return;
-    }
-    try {
-        const client = await getClient();
-        const query = `
+  if (!eventId) {
+    ctx.response.status = 400;
+    ctx.response.body = {
+      error: "Requête invalide : 'eventId' doit être fourni.",
+    };
+    return;
+  }
+  try {
+    const client = await getClient();
+    const query = `
         query {
           progress(
             where: {
@@ -69,32 +69,32 @@ const getPromotionProgress = async (ctx: RouterContext) => {
         }
       `;
 
-        const response = await client.run(query);
-        ctx.response.status = 200;
-        ctx.response.body = response;
-    } catch (error) {
-        console.error("Erreur GraphQL :", error);
-        ctx.response.status = 500;
-        ctx.response.body = {error: error};
-    }
+    const response = await client.run(query);
+    ctx.response.status = 200;
+    ctx.response.body = response;
+  } catch (error) {
+    console.error("Erreur GraphQL :", error);
+    ctx.response.status = 500;
+    ctx.response.body = {error: error};
+  }
 };
 
 export {getPromotionProgress};
 
 const getOptionalPromotionProgress = async (ctx: RouterContext) => {
-    const {eventId} = ctx.params;
+  const {eventId} = ctx.params;
 
-    if (!eventId) {
-        ctx.response.status = 400;
-        ctx.response.body = {
-            error: "Requête invalide : 'eventId' doit être fourni.",
-        };
-        return;
-    }
+  if (!eventId) {
+    ctx.response.status = 400;
+    ctx.response.body = {
+      error: "Requête invalide : 'eventId' doit être fourni.",
+    };
+    return;
+  }
 
-    try {
-        const client = await getClient();
-        const query = `
+  try {
+    const client = await getClient();
+    const query = `
         query {
           progress(
             where: {
@@ -107,6 +107,8 @@ const getOptionalPromotionProgress = async (ctx: RouterContext) => {
           ) {
             user {
               login
+              firstName
+              lastName
             }
             grade
             group {
@@ -133,14 +135,14 @@ const getOptionalPromotionProgress = async (ctx: RouterContext) => {
         }
       `;
 
-        const response = await client.run(query);
-        ctx.response.status = 200;
-        ctx.response.body = response;
-    } catch (error) {
-        console.error("Erreur GraphQL :", error);
-        ctx.response.status = 500;
-        ctx.response.body = {error};
-    }
+    const response = await client.run(query);
+    ctx.response.status = 200;
+    ctx.response.body = response;
+  } catch (error) {
+    console.error("Erreur GraphQL :", error);
+    ctx.response.status = 500;
+    ctx.response.body = {error};
+  }
 };
 
 export {getOptionalPromotionProgress};
