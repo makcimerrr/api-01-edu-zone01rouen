@@ -133,3 +133,61 @@ export const additionalProjects = [
     "Atelier-Hardskills",
     "Create-Your-Portfolio",
 ];
+
+// Specialties: ordered list of projects per specialty (order matters for progression)
+export const specialties: Record<string, string[]> = {
+    "cybersecurity": [
+        "Passive",
+        "Inspector-Image",
+        "Active",
+        "Local",
+        "Web-Hack",
+        "Injector",
+        "Hole-In-Bin",
+        "Mal-Track",
+        "Evasion",
+        "Obfuscator",
+        "Malware",
+    ],
+    "ai": [
+        "Kaggle-Titanic",
+        "NLP-Scrapper",
+        "Emotions-Detector",
+        "SP500-Strategies",
+        "Credit-Scoring",
+    ],
+    "blockchain": [
+        "NFT-Marketplace",
+        "Payment-Channel",
+        "Node-Dashboard",
+        "Financial-Instruments",
+    ],
+    "devops": [
+        "Deep-In-Net",
+        "Deep-In-System",
+        "Crud-Master",
+        "Play-With-Container",
+        "Orchestrator",
+        "Cloud-Design",
+        "Code-Keeper",
+    ],
+    "game": [
+        "Firing-Range",
+        "Widget-Factory",
+        "Army-Of-One",
+        "Vehicle-Physics",
+        "Zombie-AI",
+        "Nascar-Online-Alpha",
+        "Mouse-VR",
+        "The-Pages",
+        "Stealth-Boom",
+    ],
+    "mobile-application": [
+        "Twenty-Forty-Eight",
+        "Sky-Map",
+        "Chess",
+        "Kaquiz",
+        "Stock-Market",
+        "Secure-Messenger",
+    ],
+};

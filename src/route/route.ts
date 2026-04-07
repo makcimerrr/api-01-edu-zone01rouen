@@ -44,6 +44,7 @@ import {
 import {getToadSessionsHandler} from "../api/v1/toad.ts";
 import {getPiscineProgressHandler} from "../api/v1/piscine.ts";
 import {getAdditionalPromotionProgress} from "../api/v1/additional.ts";
+import {getSpecialtyStudents, getSpecialtiesList} from "../api/v1/specialty.ts";
 
 const router = new Router();
 
@@ -153,6 +154,15 @@ async function loadAdditionalController() {
     }
 }
 
+async function loadSpecialtyController() {
+    try {
+        router.get(`/${API_BASE_PATH}/${API_VERSION}/specialties`, getSpecialtiesList)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/specialties/:name/students`, getSpecialtyStudents);
+    } catch (error) {
+        console.error('Error loading specialty controller:', error);
+    }
+}
+
 async function loadPiscineController() {
     try {
         router.get(`/${API_BASE_PATH}/${API_VERSION}/piscine/progress`, getPiscineProgressHandler);
@@ -169,6 +179,7 @@ loadProjectsController().then(r => r);
 loadHolidaysController().then(r => r);
 loadToadController().then(r => r);
 loadAdditionalController().then(r => r);
+loadSpecialtyController().then(r => r);
 loadPiscineController().then(r => r);
 
 export default router;
