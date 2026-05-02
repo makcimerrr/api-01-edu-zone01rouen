@@ -1,0 +1,88 @@
+---
+title: Users
+---
+
+import { Endpoint } from "../../components/Endpoint";
+
+# Users
+
+Endpoints relatifs aux apprenants 01 Edu. Les données sont récupérées via le
+service GraphQL 01 Edu (`src/services/graphql.ts`).
+
+---
+
+## Lister les utilisateurs
+
+<Endpoint method="GET" path="/api/v1/users" />
+
+Renvoie la liste de tous les utilisateurs (id + login).
+
+### Réponse `200`
+
+```json
+{
+  "data": {
+    "user": [
+      { "id": 1, "login": "alice" },
+      { "id": 2, "login": "bob" }
+    ]
+  }
+}
+```
+
+### Exemple
+
+```bash
+curl https://api.zone01normandie.org/api/v1/users
+```
+
+---
+
+## Détail d'un utilisateur
+
+<Endpoint method="GET" path="/api/v1/user-info/:username" />
+
+Renvoie les informations détaillées d'un utilisateur identifié par son `login`.
+
+### Paramètres
+
+| Nom        | Type   | Localisation | Description                  |
+| ---------- | ------ | ------------ | ---------------------------- |
+| `username` | string | path         | Login 01 Edu de l'utilisateur |
+
+### Réponse `200`
+
+```json
+{
+  "data": {
+    "user": [
+      {
+        "id": 42,
+        "login": "alice",
+        "firstName": "Alice",
+        "lastName": "Martin",
+        "auditRatio": 1.27,
+        "auditsAssigned": 3,
+        "campus": "rouen",
+        "email": "alice@zone01.fr",
+        "githubId": "alice-gh",
+        "discordId": "1234567890",
+        "discordDMChannelId": "9876543210"
+      }
+    ]
+  }
+}
+```
+
+### Erreurs
+
+| Code | Cause                                  |
+| ---- | -------------------------------------- |
+| 400  | `username` absent dans l'URL           |
+| 500  | Erreur de l'API GraphQL 01 Edu en amont |
+
+### Exemple
+
+```bash
+curl https://api.zone01normandie.org/api/v1/user-info/alice
+```

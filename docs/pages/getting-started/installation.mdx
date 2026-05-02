@@ -1,0 +1,30 @@
+---
+title: Installation
+---
+
+# Installation
+
+## Prérequis
+
+- [Deno](https://deno.land) ≥ 1.40
+- Accès à une base PostgreSQL
+- Un token d'accès à la plateforme 01 Edu
+
+## Cloner et lancer
+
+```bash
+git clone https://github.com/makcimerrr/api-01-edu-zone01rouen.git
+cd api-01-edu-zone01rouen
+cp .env.example .env   # à créer si absent
+deno task start
+```
+
+## Variables d'environnement
+
+| Variable        | Description                                 |
+| --------------- | ------------------------------------------- |
+| `DATABASE_URL`  | URL Postgres (`postgres://user:pwd@host/db`) |
+| `DOMAIN`        | Domaine de la plateforme 01 Edu             |
+| `ACCESS_TOKEN`  | Token d'accès à l'API GraphQL 01 Edu        |
+
+> Source : `config/config.ts`.

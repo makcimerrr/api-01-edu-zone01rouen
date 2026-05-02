@@ -1,0 +1,30 @@
+---
+title: Authentification
+---
+
+# Authentification
+
+La majorité des endpoints sont publics. Certains endpoints sensibles
+(par ex. `GET /api/v1/gitea-info/:username`) sont protégés par un middleware
+`checkToken` (`src/utils/token.ts`) qui attend un **Bearer token** :
+
+```http
+Authorization: Bearer <ACCESS_TOKEN>
+```
+
+## Exemple
+
+```bash
+curl -H "Authorization: Bearer $ACCESS_TOKEN" \
+     https://api.zone01normandie.org/api/v1/gitea-info/john
+```
+
+## Échec d'authentification
+
+Si le header est absent ou invalide, l'API renvoie :
+
+```json
+{ "error": "Unauthorized" }
+```
+
+avec un code HTTP `401`.

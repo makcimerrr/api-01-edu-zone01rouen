@@ -1,0 +1,26 @@
+---
+title: Erreurs
+---
+
+# Erreurs
+
+L'API renvoie toujours du JSON. Les erreurs suivent le schéma :
+
+```json
+{ "error": "<message>" }
+```
+
+## Codes courants
+
+| Code | Cas d'usage                                                 |
+| ---- | ----------------------------------------------------------- |
+| 400  | Paramètre manquant ou invalide                              |
+| 401  | Token absent / invalide (`checkToken`)                      |
+| 404  | Ressource non trouvée (`NotFoundError`)                     |
+| 409  | Conflit (`ConflictError`, ex. clé déjà existante)           |
+| 500  | Erreur serveur (souvent côté GraphQL 01 Edu)                |
+
+## Sources
+
+- `src/core/errors/conflict.error.ts`
+- `src/core/errors/not-found.error.ts`

@@ -1,0 +1,38 @@
+---
+title: Base URL & versioning
+---
+
+# Base URL & versioning
+
+Tous les endpoints sont préfixés par `API_BASE_PATH` puis `API_VERSION`,
+définis dans `config/config.ts` :
+
+```ts
+export const API_VERSION = "v1";
+export const API_BASE_PATH = "api";
+```
+
+Soit en pratique :
+
+```
+https://<host>/api/v1/<resource>
+```
+
+## Versions
+
+| Version | Statut        |
+| ------- | ------------- |
+| `v1`    | ✅ Stable      |
+
+## Endpoint racine
+
+`GET /` renvoie un payload de santé :
+
+```json
+{
+  "message": "Bienvenue sur l'API 01 Edu!",
+  "documentation": "https://zone01normandie.org/docs",
+  "status": "OK",
+  "version": "v1"
+}
+```

@@ -22,6 +22,23 @@ app.use(async (ctx: { request: { url: { pathname: string; }; }; }, next: () => a
     }
 });
 
+// Documentation Nextra (build statique dans docs/out)
+app.use(async (ctx, next) => {
+    const { pathname } = ctx.request.url;
+    if (!pathname.startsWith("/docs")) return next();
+
+    let rel = pathname.replace(/^\/docs\/?/, "") || "index.html";
+    // trailingSlash: true → /docs/foo/ doit servir foo/index.html
+    if (rel.endsWith("/")) rel += "index.html";
+    if (!/\.[a-zA-Z0-9]+$/.test(rel)) rel += "/index.html";
+
+    try {
+        await send(ctx, rel, { root: "./docs/out" });
+    } catch {
+        await send(ctx, "404.html", { root: "./docs/out" });
+    }
+});
+
 // Routes
 app.use(router.routes());
 app.use(router.allowedMethods());
