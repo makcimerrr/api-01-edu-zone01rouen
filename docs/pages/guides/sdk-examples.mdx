@@ -1,0 +1,136 @@
+---
+title: Exemples SDK
+---
+
+# Exemples client (TS / Python / Go / curl)
+
+L'API est en JSON pur sans SDK officiel : `fetch` natif suffit dans toutes
+les stacks. Voici des recettes prêtes à coller.
+
+## TypeScript / JavaScript
+
+### Wrapper minimal
+
+```ts
+const API = process.env.API ?? "https://api-zone01-rouen.deno.dev";
+
+async function api<T>(path: string, init?: RequestInit): Promise<T> {
+  const r = await fetch(`${API}${path}`, {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...(init?.headers ?? {}),
+    },
+  });
+  if (!r.ok) {
+    const body = await r.json().catch(() => ({}));
+    throw new Error(`HTTP ${r.status}: ${body.error ?? body.message ?? r.statusText}`);
+  }
+  return r.status === 204 ? (undefined as T) : await r.json();
+}
+```
+
+### Lire une promotion
+
+```ts
+const promos = await api<{ promoId: string; name: string }[]>("/api/v1/promotions");
+console.log(promos);
+```
+
+### Créer un projet
+
+```ts
+await api("/api/v1/projects", {
+  method: "POST",
+  body: JSON.stringify({
+    name: "Smart-Road",
+    projectTimeWeek: 2,
+    category: "tronc-commun",
+    sortIndex: 42,
+  }),
+});
+```
+
+### Endpoint protégé (Gitea)
+
+```ts
+const giteaInfo = await api("/api/v1/gitea-info/alice", {
+  headers: { Authorization: `Bearer ${process.env.GITEA_TOKEN}` },
+});
+```
+
+## Python
+
+```python
+import os, requests
+
+API = os.environ.get("API", "https://api-zone01-rouen.deno.dev")
+
+def api(method, path, **kwargs):
+    r = requests.request(method, f"{API}{path}", **kwargs)
+    if not r.ok:
+        body = r.json() if r.content else {}
+        raise Exception(f"HTTP {r.status_code}: {body.get('error') or body.get('message')}")
+    return None if r.status_code == 204 else r.json()
+
+# Usage
+promos = api("GET", "/api/v1/promotions")
+api("DELETE", "/api/v1/projects/12")
+```
+
+## Go
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+    "net/http"
+)
+
+const API = "https://api-zone01-rouen.deno.dev"
+
+type Promotion struct {
+    PromoId string `json:"promoId"`
+    Name    string `json:"name"`
+}
+
+func main() {
+    resp, _ := http.Get(API + "/api/v1/promotions")
+    defer resp.Body.Close()
+
+    var promos []Promotion
+    json.NewDecoder(resp.Body).Decode(&promos)
+    fmt.Println(promos)
+}
+```
+
+## curl (cheatsheet)
+
+```bash
+export API="https://api-zone01-rouen.deno.dev"
+
+# Lecture
+curl $API/api/v1/promotions
+
+# Lecture filtrée
+curl "$API/api/v1/specialties/cybersecurity/students?eventId=72"
+
+# Création
+curl -X POST $API/api/v1/holidays \
+     -H "Content-Type: application/json" \
+     -d '{"label":"Vacances","start":"2025-12-21","end":"2026-01-05"}'
+
+# Upsert
+curl -X PUT $API/api/v1/discord-users \
+     -H "Content-Type: application/json" \
+     -d '{"login":"alice","discord_id":"1234567890"}'
+
+# Suppression
+curl -X DELETE $API/api/v1/projects/12
+
+# Endpoint protégé
+curl -H "Authorization: Bearer $GITEA_TOKEN" \
+     $API/api/v1/gitea-info/alice
+```

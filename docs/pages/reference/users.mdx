@@ -13,7 +13,7 @@ service GraphQL 01 Edu (`src/services/graphql.ts`).
 
 ## Lister les utilisateurs
 
-<Endpoint method="GET" path="/api/v1/users" />
+<Endpoint method="GET" path="/api/v1/users" source="src/api/v1/user.ts" />
 
 Renvoie la liste de tous les utilisateurs (id + login).
 
@@ -33,14 +33,14 @@ Renvoie la liste de tous les utilisateurs (id + login).
 ### Exemple
 
 ```bash
-curl https://api.zone01normandie.org/api/v1/users
+curl $API/api/v1/users
 ```
 
 ---
 
 ## Détail d'un utilisateur
 
-<Endpoint method="GET" path="/api/v1/user-info/:username" />
+<Endpoint method="GET" path="/api/v1/user-info/:username" source="src/api/v1/user.ts" />
 
 Renvoie les informations détaillées d'un utilisateur identifié par son `login`.
 
@@ -84,5 +84,5 @@ Renvoie les informations détaillées d'un utilisateur identifié par son `login
 ### Exemple
 
 ```bash
-curl https://api.zone01normandie.org/api/v1/user-info/alice
+curl $API/api/v1/user-info/alice
 ```

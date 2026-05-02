@@ -1,13 +1,14 @@
 export default {
-  "users": "Users",
-  "promotions": "Promotions",
+  index: "Vue d'ensemble",
+  users: "Users",
+  promotions: "Promotions",
   "promo-configs": "Promo configs",
-  "projects": "Projects",
-  "holidays": "Holidays",
-  "discord": "Discord",
+  projects: "Projects",
+  holidays: "Holidays",
+  discord: "Discord",
   "discord-users": "Discord users",
-  "gitea": "Gitea",
-  "toad": "Toad",
-  "piscine": "Piscine",
-  "specialty": "Specialty"
-}
+  gitea: "Gitea 🔒",
+  toad: "Toad",
+  piscine: "Piscine",
+  specialty: "Specialty",
+};

@@ -4,23 +4,86 @@ title: Erreurs
 
 # Erreurs
 
-L'API renvoie toujours du JSON. Les erreurs suivent le schéma :
+L'API renvoie toujours du JSON. Deux **formats coexistent** selon la famille
+d'endpoints :
+
+## Format A — handlers principaux
 
 ```json
 { "error": "<message>" }
 ```
 
-## Codes courants
+Utilisé par : users, promotions, projects, holidays, promo-configs,
+discord-users, gitea, toad, piscine, specialty.
 
-| Code | Cas d'usage                                                 |
-| ---- | ----------------------------------------------------------- |
-| 400  | Paramètre manquant ou invalide                              |
-| 401  | Token absent / invalide (`checkToken`)                      |
-| 404  | Ressource non trouvée (`NotFoundError`)                     |
-| 409  | Conflit (`ConflictError`, ex. clé déjà existante)           |
-| 500  | Erreur serveur (souvent côté GraphQL 01 Edu)                |
+## Format B — endpoints Discord
+
+```json
+{
+  "success": false,
+  "message": "<message>"
+}
+```
+
+Utilisé par : `/discord/technologies`, `/discord/:name/config`,
+`/discord/config/full`, `/discord/forbidden-schools`,
+`/discord/job-queries`.
+
+> Les réponses **succès** de la famille Discord ont elles aussi un wrapper :
+> `{ "success": true, "<resource>": ... }`.
+
+## Codes HTTP
+
+| Code | Cas d'usage                                                                |
+| ---- | -------------------------------------------------------------------------- |
+| 200  | Succès (lecture / mise à jour)                                             |
+| 201  | Ressource créée                                                            |
+| 204  | Succès sans corps (suppression)                                            |
+| 302  | Redirection (utilisé par `GET /` → `/docs/`)                               |
+| 400  | Paramètre manquant ou invalide / nom de champ Discord hors liste blanche   |
+| 401  | *Non utilisé.* Le middleware d'auth renvoie `400` ou `403` (cf. ci-dessous)|
+| 403  | Token rejeté par Gitea OU compte non-admin                                 |
+| 404  | Ressource non trouvée (`NotFoundError`) / spécialité inconnue              |
+| 409  | Conflit (`ConflictError`, ex. clé déjà existante)                          |
+| 500  | Erreur serveur (Postgres, GraphQL Hasura 01 Edu, Gitea injoignable)        |
+
+## Exemples
+
+### Format A
+
+```bash
+curl $API/api/v1/promotions/abc/students
+```
+```json
+{ "error": "Requête invalide : 'eventId' doit être fourni." }
+```
+
+### Format B
+
+```bash
+curl $API/api/v1/discord/inexistant/config
+```
+```json
+{
+  "success": false,
+  "message": "Le champ 'inexistant' n'est pas autorisé."
+}
+```
 
 ## Sources
 
 - `src/core/errors/conflict.error.ts`
 - `src/core/errors/not-found.error.ts`
+- `src/utils/token.ts` (codes 400/403/500 du middleware d'auth)
+
+## Détecter les erreurs côté client
+
+```ts
+const r = await fetch(`${API}/api/v1/promotions/72/students`);
+if (!r.ok) {
+  const body = await r.json();
+  // Format A vs B
+  const msg = body.error ?? body.message ?? "Erreur inconnue";
+  throw new Error(`HTTP ${r.status}: ${msg}`);
+}
+```

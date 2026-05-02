@@ -1,0 +1,34 @@
+---
+title: Changelog
+---
+
+# Changelog
+
+Toutes les évolutions notables, par ordre antéchronologique. Les **breaking
+changes** sont marqués 🔴.
+
+## 2026-05-02
+
+- 🚀 **Documentation Nextra** publiée sous `/docs/`.
+- 🔁 La route `/` redirige désormais (`302`) vers `/docs/`.
+- ➕ Pages : Tous les endpoints, Glossaire, CORS, Versioning, Support, SDKs.
+
+## 2026-04 (commit `4e419ad`)
+
+- ➕ Endpoint [`GET /api/v1/specialties/:name/students`](/reference/specialty) avec progression calculée serveur.
+- ➕ Endpoint [`GET /api/v1/specialties`](/reference/specialty) (catalogue des spécialités).
+
+## 2026-03 (commits `793ecf0` / `ad2f8f9`)
+
+- ➕ Champs `firstName` et `lastName` ajoutés au payload utilisateurs et
+  aux routes de progression promotion.
+
+## 2026-02 (commit `dcec1dc`)
+
+- ➕ La liste `additionalProjects` est exposée côté service projets.
+- ➕ Endpoint [`GET /api/v1/promotions/:eventId/students/additionals`](/reference/promotions).
+
+## Historique antérieur
+
+Voir l'historique Git du repo :
+https://github.com/makcimerrr/api-01-edu-zone01rouen/commits/main

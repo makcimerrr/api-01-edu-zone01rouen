@@ -1,0 +1,44 @@
+---
+title: Versioning
+---
+
+# Politique de versioning
+
+## Schéma actuel
+
+L'API utilise un préfixe de version dans le path : `/api/v1/...`. Une
+nouvelle version majeure (`v2`) sera introduite **uniquement** en cas de
+breaking change non rétro-compatible.
+
+## Qu'est-ce qu'un breaking change ?
+
+| Type                                      | Breaking ?   |
+| ----------------------------------------- | ------------ |
+| Ajouter un endpoint                       | ❌            |
+| Ajouter un champ optionnel à une réponse  | ❌            |
+| Ajouter un champ optionnel à un body      | ❌            |
+| Renommer un endpoint                       | ✅ Breaking  |
+| Renommer / supprimer un champ             | ✅ Breaking  |
+| Changer le type d'un champ                | ✅ Breaking  |
+| Changer le code HTTP d'un cas             | ✅ Breaking  |
+| Rendre un champ optionnel obligatoire     | ✅ Breaking  |
+
+## Cycle de support
+
+| Version | Statut    | Sunset                      |
+| ------- | --------- | --------------------------- |
+| `v1`    | ✅ Stable | Pas de date de sunset       |
+
+En cas d'introduction d'une `v2`, `v1` recevra un header
+`Deprecation: true` et restera servie pendant **au moins 6 mois** avant
+suppression.
+
+## Préversions
+
+Les changements en cours de développement sont disponibles sur les
+preview deployments Deno Deploy (URLs `*.deno.dev` de PR). Ne pas
+consommer une preview URL en production.
+
+## Suivre les changements
+
+Voir le [Changelog](/changelog).

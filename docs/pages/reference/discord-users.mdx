@@ -19,7 +19,7 @@ Voir aussi le [schéma DiscordUser](/schemas/discord-user).
 
 ## Lister tous les liens
 
-<Endpoint method="GET" path="/api/v1/discord-users" />
+<Endpoint method="GET" path="/api/v1/discord-users" source="src/api/v1/discord_users.ts" />
 
 ### Réponse `200`
 
@@ -39,7 +39,7 @@ Voir aussi le [schéma DiscordUser](/schemas/discord-user).
 
 ## Récupérer le lien d'un apprenant
 
-<Endpoint method="GET" path="/api/v1/discord-users/:login" />
+<Endpoint method="GET" path="/api/v1/discord-users/:login" source="src/api/v1/discord_users.ts" />
 
 | Nom     | Type   | Localisation | Description           |
 | ------- | ------ | ------------ | --------------------- |
@@ -55,7 +55,7 @@ Voir aussi le [schéma DiscordUser](/schemas/discord-user).
 
 ## Créer / mettre à jour un lien (upsert)
 
-<Endpoint method="PUT" path="/api/v1/discord-users" />
+<Endpoint method="PUT" path="/api/v1/discord-users" source="src/api/v1/discord_users.ts" />
 
 Insère le lien s'il n'existe pas, le met à jour sinon. La clé d'unicité est
 le `login`.
@@ -82,7 +82,7 @@ L'objet créé ou mis à jour.
 
 ## Supprimer un lien
 
-<Endpoint method="DELETE" path="/api/v1/discord-users/:login" />
+<Endpoint method="DELETE" path="/api/v1/discord-users/:login" source="src/api/v1/discord_users.ts" />
 
 ### Réponse
 

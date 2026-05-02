@@ -16,7 +16,7 @@ sur les projets du tronc commun, optionnels et additionnels.
 
 ## Lister les promotions actives
 
-<Endpoint method="GET" path="/api/v1/promotions" />
+<Endpoint method="GET" path="/api/v1/promotions" source="src/api/v1/promotion.ts" />
 
 Renvoie l'ensemble des promotions **non archivées**, lues depuis la table
 `promotions` (Drizzle / Postgres).
@@ -44,14 +44,14 @@ Renvoie l'ensemble des promotions **non archivées**, lues depuis la table
 ### Exemple
 
 ```bash
-curl https://api.zone01normandie.org/api/v1/promotions
+curl $API/api/v1/promotions
 ```
 
 ---
 
 ## Progression — projets du tronc commun
 
-<Endpoint method="GET" path="/api/v1/promotions/:eventId/students" />
+<Endpoint method="GET" path="/api/v1/promotions/:eventId/students" source="src/api/v1/promotion.ts" />
 
 Liste, pour un `eventId` donné, l'avancement de chaque étudiant **sur les
 projets du tronc commun** (`projects` dans `src/services/projects.ts`,
@@ -101,14 +101,14 @@ ex. `Lets-Travel`, `Travel-Plan`, `Buy-01`, `Forum`, `GraphQL`…).
 ### Exemple
 
 ```bash
-curl https://api.zone01normandie.org/api/v1/promotions/72/students
+curl $API/api/v1/promotions/72/students
 ```
 
 ---
 
 ## Progression — projets optionnels
 
-<Endpoint method="GET" path="/api/v1/promotions/:eventId/students/optionals" />
+<Endpoint method="GET" path="/api/v1/promotions/:eventId/students/optionals" source="src/api/v1/promotion.ts" />
 
 Identique à l'endpoint précédent mais filtre sur la liste `optionalProjects`
 (ex. `Forum-Authentication`, `Make-Your-Game-History`,
@@ -127,7 +127,7 @@ Mêmes champs que `students`. Voir aussi
 
 ## Progression — projets additionnels
 
-<Endpoint method="GET" path="/api/v1/promotions/:eventId/students/additionals" />
+<Endpoint method="GET" path="/api/v1/promotions/:eventId/students/additionals" source="src/api/v1/additional.ts" />
 
 Filtre sur la liste `additionalProjects` (Push-Swap, Tetris-Optimizer,
 projets de spécialité, ateliers softskills…).

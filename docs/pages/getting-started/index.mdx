@@ -1,0 +1,25 @@
+---
+title: Démarrage
+---
+
+# Démarrage
+
+Tout ce qu'il faut pour appeler l'API en moins de 5 minutes.
+
+- [Installation](/getting-started/installation) — cloner, configurer `.env`, lancer.
+- [Base URL & versioning](/getting-started/base-url) — environnements et préfixe `/api/v1`.
+- [Authentification](/getting-started/authentication) — Bearer Gitea, comptes admin.
+- [CORS](/getting-started/cors) — origines autorisées.
+- [Erreurs](/getting-started/errors) — formats `{ error }` et `{ success, message }`.
+- [Versioning](/getting-started/versioning) — politique de breaking changes.
+
+## Premier appel
+
+```bash
+export API="https://api-zone01-rouen.deno.dev"
+curl $API/api/v1/promotions
+```
+
+## Patterns récurrents
+
+Voir [Exemples SDK](/guides/sdk-examples) pour TS / Python / Go / curl.

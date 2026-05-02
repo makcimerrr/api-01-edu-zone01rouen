@@ -21,7 +21,7 @@ Voir aussi le [schéma PromoConfig](/schemas/promo-config).
 
 ## Lister toutes les configs
 
-<Endpoint method="GET" path="/api/v1/promo-configs" />
+<Endpoint method="GET" path="/api/v1/promo-configs" source="src/api/v1/promo_config.ts" />
 
 ### Réponse `200`
 
@@ -46,7 +46,7 @@ Voir aussi le [schéma PromoConfig](/schemas/promo-config).
 
 ## Récupérer une config
 
-<Endpoint method="GET" path="/api/v1/promo-configs/:key" />
+<Endpoint method="GET" path="/api/v1/promo-configs/:key" source="src/api/v1/promo_config.ts" />
 
 | Nom   | Type   | Localisation | Description                       |
 | ----- | ------ | ------------ | --------------------------------- |
@@ -62,7 +62,7 @@ Voir aussi le [schéma PromoConfig](/schemas/promo-config).
 
 ## Créer une config
 
-<Endpoint method="POST" path="/api/v1/promo-configs" />
+<Endpoint method="POST" path="/api/v1/promo-configs" source="src/api/v1/promo_config.ts" />
 
 ### Body (JSON)
 
@@ -108,7 +108,7 @@ L'objet créé, identique à la requête `GET /:key`.
 
 ## Mettre à jour une config
 
-<Endpoint method="PUT" path="/api/v1/promo-configs/:key" />
+<Endpoint method="PUT" path="/api/v1/promo-configs/:key" source="src/api/v1/promo_config.ts" />
 
 Tous les champs du body sont optionnels (cf. `UpdatePromoConfigDTO`). La
 clé n'est pas modifiable — supprimer puis recréer si besoin.
@@ -123,7 +123,7 @@ clé n'est pas modifiable — supprimer puis recréer si besoin.
 
 ## Supprimer une config
 
-<Endpoint method="DELETE" path="/api/v1/promo-configs/:key" />
+<Endpoint method="DELETE" path="/api/v1/promo-configs/:key" source="src/api/v1/promo_config.ts" />
 
 ### Réponse
 

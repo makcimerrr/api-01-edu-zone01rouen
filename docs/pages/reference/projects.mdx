@@ -19,7 +19,7 @@ Voir aussi le [schéma Project](/schemas/project).
 
 ## Lister les projets
 
-<Endpoint method="GET" path="/api/v1/projects" />
+<Endpoint method="GET" path="/api/v1/projects" source="src/api/v1/projects.ts" />
 
 ### Réponse `200`
 
@@ -39,7 +39,7 @@ Voir aussi le [schéma Project](/schemas/project).
 
 ## Récupérer un projet
 
-<Endpoint method="GET" path="/api/v1/projects/:id" />
+<Endpoint method="GET" path="/api/v1/projects/:id" source="src/api/v1/projects.ts" />
 
 | Nom  | Type   | Localisation | Description       |
 | ---- | ------ | ------------ | ----------------- |
@@ -55,7 +55,7 @@ Voir aussi le [schéma Project](/schemas/project).
 
 ## Créer un projet
 
-<Endpoint method="POST" path="/api/v1/projects" />
+<Endpoint method="POST" path="/api/v1/projects" source="src/api/v1/projects.ts" />
 
 ### Body (JSON)
 
@@ -83,7 +83,7 @@ L'objet créé.
 
 ## Mettre à jour un projet
 
-<Endpoint method="PUT" path="/api/v1/projects/:id" />
+<Endpoint method="PUT" path="/api/v1/projects/:id" source="src/api/v1/projects.ts" />
 
 Tous les champs du body sont optionnels (cf. `UpdateProjectDTO`).
 
@@ -97,7 +97,7 @@ Tous les champs du body sont optionnels (cf. `UpdateProjectDTO`).
 
 ## Supprimer un projet
 
-<Endpoint method="DELETE" path="/api/v1/projects/:id" />
+<Endpoint method="DELETE" path="/api/v1/projects/:id" source="src/api/v1/projects.ts" />
 
 ### Réponse
 

@@ -17,7 +17,7 @@ Proxy authentifié vers l'instance Gitea de Zone01 Normandie
 
 ## Récupérer le profil + heatmap d'un utilisateur
 
-<Endpoint method="GET" path="/api/v1/gitea-info/:username" auth />
+<Endpoint method="GET" path="/api/v1/gitea-info/:username" auth source="src/api/v1/gitea.ts" />
 
 Effectue **deux requêtes parallèles** vers Gitea :
 
@@ -68,5 +68,5 @@ Authorization: Bearer <token-gitea-valide>
 
 ```bash
 curl -H "Authorization: Bearer $GITEA_TOKEN" \
-     https://api.zone01normandie.org/api/v1/gitea-info/alice
+     $API/api/v1/gitea-info/alice
 ```

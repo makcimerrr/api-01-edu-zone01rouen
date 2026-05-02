@@ -1,0 +1,106 @@
+---
+title: Tous les endpoints
+---
+
+import { Endpoint } from "../components/Endpoint";
+
+# Tous les endpoints
+
+Vue d'ensemble de l'API. Tous les chemins sont préfixés par `/api/v1`.
+
+## Users
+
+<Endpoint method="GET" path="/api/v1/users" />
+<Endpoint method="GET" path="/api/v1/user-info/:username" />
+
+→ [Détails](/reference/users)
+
+## Promotions & progression
+
+<Endpoint method="GET" path="/api/v1/promotions" />
+<Endpoint method="GET" path="/api/v1/promotions/:eventId/students" />
+<Endpoint method="GET" path="/api/v1/promotions/:eventId/students/optionals" />
+<Endpoint method="GET" path="/api/v1/promotions/:eventId/students/additionals" />
+
+→ [Détails](/reference/promotions)
+
+## Promo configs
+
+<Endpoint method="GET" path="/api/v1/promo-configs" />
+<Endpoint method="GET" path="/api/v1/promo-configs/:key" />
+<Endpoint method="POST" path="/api/v1/promo-configs" />
+<Endpoint method="PUT" path="/api/v1/promo-configs/:key" />
+<Endpoint method="DELETE" path="/api/v1/promo-configs/:key" />
+
+→ [Détails](/reference/promo-configs)
+
+## Projects
+
+<Endpoint method="GET" path="/api/v1/projects" />
+<Endpoint method="GET" path="/api/v1/projects/:id" />
+<Endpoint method="POST" path="/api/v1/projects" />
+<Endpoint method="PUT" path="/api/v1/projects/:id" />
+<Endpoint method="DELETE" path="/api/v1/projects/:id" />
+
+→ [Détails](/reference/projects)
+
+## Holidays
+
+<Endpoint method="GET" path="/api/v1/holidays" />
+<Endpoint method="GET" path="/api/v1/holidays/:id" />
+<Endpoint method="POST" path="/api/v1/holidays" />
+<Endpoint method="PUT" path="/api/v1/holidays/:id" />
+<Endpoint method="DELETE" path="/api/v1/holidays/:id" />
+
+→ [Détails](/reference/holidays)
+
+## Discord (config bot)
+
+<Endpoint method="GET" path="/api/v1/discord/technologies" />
+<Endpoint method="GET" path="/api/v1/discord/:name/config" />
+<Endpoint method="GET" path="/api/v1/discord/config/full" />
+<Endpoint method="GET" path="/api/v1/discord/forbidden-schools" />
+<Endpoint method="GET" path="/api/v1/discord/job-queries" />
+
+→ [Détails](/reference/discord)
+
+## Discord users (binding)
+
+<Endpoint method="GET" path="/api/v1/discord-users" />
+<Endpoint method="GET" path="/api/v1/discord-users/:login" />
+<Endpoint method="PUT" path="/api/v1/discord-users" />
+<Endpoint method="DELETE" path="/api/v1/discord-users/:login" />
+
+→ [Détails](/reference/discord-users)
+
+## Gitea
+
+<Endpoint method="GET" path="/api/v1/gitea-info/:username" auth />
+
+→ [Détails](/reference/gitea)
+
+## Toad
+
+<Endpoint method="GET" path="/api/v1/toad/sessions" />
+
+→ [Détails](/reference/toad)
+
+## Piscine
+
+<Endpoint method="GET" path="/api/v1/piscine/progress" />
+
+→ [Détails](/reference/piscine)
+
+## Specialty
+
+<Endpoint method="GET" path="/api/v1/specialties" />
+<Endpoint method="GET" path="/api/v1/specialties/:name/students" />
+
+→ [Détails](/reference/specialty)
+
+---
+
+## Spec OpenAPI
+
+Le fichier complet est disponible dans `docs/public/openapi.yaml`. Voir la
+[vue interactive](/api-explorer).

@@ -4,6 +4,23 @@ title: Base URL & versioning
 
 # Base URL & versioning
 
+## Environnements
+
+| Environnement      | URL                                              |
+| ------------------ | ------------------------------------------------ |
+| **Production**     | `https://api-zone01-rouen.deno.dev`              |
+| Domaine custom     | (à confirmer auprès du mainteneur)               |
+| Local              | `http://localhost:8000`                          |
+
+> Tous les exemples curl de la doc utilisent la variable `$API`. Définis-la
+> une fois pour copier-coller librement :
+>
+> ```bash
+> export API="https://api-zone01-rouen.deno.dev"
+> ```
+
+## Préfixe de version
+
 Tous les endpoints sont préfixés par `API_BASE_PATH` puis `API_VERSION`,
 définis dans `config/config.ts` :
 
@@ -15,24 +32,20 @@ export const API_BASE_PATH = "api";
 Soit en pratique :
 
 ```
-https://<host>/api/v1/<resource>
+$API/api/v1/<resource>
 ```
 
 ## Versions
 
-| Version | Statut        |
-| ------- | ------------- |
-| `v1`    | ✅ Stable      |
+| Version | Statut    | Notes                          |
+| ------- | --------- | ------------------------------ |
+| `v1`    | ✅ Stable | Voir [Versioning](/getting-started/versioning) |
 
-## Endpoint racine
+## Health check
 
-`GET /` renvoie un payload de santé :
+`GET /` redirige (`302`) vers `/docs/`. Pour un check programmatique,
+utiliser n'importe quel endpoint léger :
 
-```json
-{
-  "message": "Bienvenue sur l'API 01 Edu!",
-  "documentation": "https://zone01normandie.org/docs",
-  "status": "OK",
-  "version": "v1"
-}
+```bash
+curl -fsS $API/api/v1/promotions > /dev/null && echo OK
 ```

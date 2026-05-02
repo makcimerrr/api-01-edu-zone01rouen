@@ -2,26 +2,45 @@
 title: API 01 Edu — Zone01 Rouen
 ---
 
+import { Mermaid } from "../components/Mermaid";
+
 # API 01 Edu — Zone01 Rouen
 
-Bienvenue dans la documentation de l'API REST construite avec **Deno + Oak** qui
-expose les données pédagogiques de Zone01 Rouen (utilisateurs, promotions,
-projets, configurations Discord, etc.) au-dessus de la plateforme **01 Edu**.
+REST API construite avec **Deno + Oak**, qui expose les données pédagogiques
+de Zone01 Rouen au-dessus de la plateforme **01 Edu** : utilisateurs,
+promotions, projets, configuration Discord, intégration Gitea, etc.
 
 ## En une requête
 
 ```bash
-curl https://api.zone01normandie.org/api/v1/promotions
+export API="https://api-zone01-rouen.deno.dev"
+curl $API/api/v1/promotions
 ```
+
+## Architecture
+
+<Mermaid chart={`
+flowchart LR
+  Client[Dashboard / Bot Discord / Scripts] -->|HTTPS| API[API Oak<br/>Deno Deploy]
+  API -->|GraphQL| Hasura[01 Edu<br/>Hasura GraphQL]
+  API -->|SQL| PG[(Postgres<br/>Drizzle ORM)]
+  API -->|REST forwarding| Gitea[Gitea Zone01]
+  API -->|Bearer token<br/>checkToken| Gitea
+`} />
 
 ## Pour qui ?
 
-- **Outils internes** Zone01 Rouen (dashboards, rapports de progression).
+- **Outils internes** Zone01 Rouen : dashboards de progression, exports.
 - **Bots Discord** consommant `/discord/*` et `/discord-users/*`.
-- **Scripts d'export** vers Gitea, Toad, etc.
+- **Scripts** d'agrégation de données (Gitea, Toad, Piscine).
 
-## Pour aller plus loin
+## Démarrer
 
-- [Démarrage rapide](/getting-started/installation)
-- [Authentification](/getting-started/authentication)
-- [Référence des endpoints](/reference/users)
+| Lien                                              | Quand le lire                              |
+| ------------------------------------------------- | ------------------------------------------ |
+| [Démarrage rapide](/getting-started)              | Premier appel en moins de 5 minutes        |
+| [Tous les endpoints](/overview)                   | Vue d'ensemble en un coup d'œil            |
+| [API Explorer](/api-explorer)                     | Tester les endpoints depuis le navigateur  |
+| [Référence API](/reference)                       | Spec détaillée par domaine                 |
+| [Guides](/guides)                                 | Cas d'usage transverses                    |
+| [Glossaire](/glossary)                            | Décoder le jargon Zone01 / 01 Edu          |

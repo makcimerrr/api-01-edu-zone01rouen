@@ -10,14 +10,19 @@ const COLORS: Record<Method, string> = {
   DELETE: "#dc2626",
 };
 
+const REPO = "https://github.com/makcimerrr/api-01-edu-zone01rouen";
+
 export function Endpoint({
   method,
   path,
   auth = false,
+  source,
 }: {
   method: Method;
   path: string;
   auth?: boolean;
+  /** Path relatif au repo, ex: src/api/v1/users.ts */
+  source?: string;
 }) {
   return (
     <div
@@ -32,6 +37,7 @@ export function Endpoint({
         fontFamily:
           "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
         fontSize: 14,
+        flexWrap: "wrap",
       }}
     >
       <span
@@ -47,7 +53,9 @@ export function Endpoint({
       >
         {method}
       </span>
-      <code style={{ background: "transparent", flex: 1 }}>{path}</code>
+      <code style={{ background: "transparent", flex: 1, minWidth: 0 }}>
+        {path}
+      </code>
       {auth && (
         <span
           title="Authentification requise"
@@ -62,6 +70,25 @@ export function Endpoint({
         >
           🔒 auth
         </span>
+      )}
+      {source && (
+        <a
+          href={`${REPO}/blob/main/${source}`}
+          target="_blank"
+          rel="noreferrer"
+          title="Voir le handler sur GitHub"
+          style={{
+            fontSize: 11,
+            padding: "2px 8px",
+            borderRadius: 4,
+            border: "1px solid rgba(125,125,125,0.3)",
+            color: "inherit",
+            textDecoration: "none",
+            opacity: 0.85,
+          }}
+        >
+          source ↗
+        </a>
       )}
     </div>
   );

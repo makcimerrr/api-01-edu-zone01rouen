@@ -1,0 +1,95 @@
+---
+title: Glossaire
+---
+
+# Glossaire
+
+Termes Zone01 / 01 Edu utilisés dans la doc.
+
+## 01 Edu
+
+Plateforme pédagogique sous-jacente (moteur Hasura + UI). Toutes les
+données apprenants/projets viennent de là via GraphQL.
+
+## audit
+
+Processus d'évaluation peer-to-peer : un apprenant fait passer un audit à
+un autre une fois son projet terminé.
+
+## audit ratio (`auditRatio`)
+
+Ratio entre audits effectués et audits reçus. Reflète la participation à
+l'évaluation collective.
+
+## campus
+
+Antenne géographique (`rouen`, `cherbourg`, …). Champ `user.campus` dans
+GraphQL.
+
+## eventId
+
+ID numérique d'un événement 01 Edu — typiquement une promotion (ex. `72`
+pour Promotion 1 — 2024). C'est le filtre principal des routes
+`/promotions/:eventId/...`.
+
+## grade
+
+Note d'un projet (généralement `0`, `1`, ou décimal pour les projets
+audités plusieurs fois). `null` = pas encore audité.
+
+## group
+
+Unité de travail sur un projet : 1+ apprenants assignés au même `object`.
+Possède un statut (`setup`, `working`, `audit`, `finished`).
+
+## login
+
+Identifiant unique d'un apprenant (ex. `alice`). Source de vérité pour
+toutes les jointures (Discord, Gitea, GraphQL).
+
+## object
+
+Nom interne d'un projet côté GraphQL 01 Edu, en kebab-case minuscule
+(ex. `lets-travel`, `bomberman-dom`).
+
+## piscine
+
+Phase intensive de sélection (Piscine Go) ou de spécialisation
+(Piscine JS, Piscine Rust). Voir l'endpoint
+[`/piscine/progress`](/reference/piscine).
+
+## progress
+
+Table GraphQL 01 Edu reliant un apprenant, un objet (projet) et un groupe.
+C'est la source de toutes les routes de progression.
+
+## promotion
+
+Cohorte d'apprenants démarrant la même année (ex. `p1-2024`). Stockée
+localement dans la table `promotions` + `promo_config`.
+
+## projet additionnel
+
+Projet hors tronc commun listé dans `additionalProjects`
+(`src/services/projects.ts`). Inclut les projets de spécialité et les
+ateliers softskills.
+
+## projet optionnel
+
+Projet bonus listé dans `optionalProjects` (ex.
+`Forum-Authentication`). Pas obligatoire pour valider la promotion.
+
+## projet du tronc commun
+
+Projet listé dans `projects` (constante du même fichier) — passage obligé.
+
+## spécialité
+
+Filière de spécialisation (cybersecurity, ai, blockchain, devops, game,
+mobile-application). Liste ordonnée de projets dans `specialties`. Voir
+[Specialty](/reference/specialty).
+
+## Toad
+
+Suite de mini-jeux techniques utilisée pour la pré-sélection des
+candidats. Voir [Toad](/reference/toad).

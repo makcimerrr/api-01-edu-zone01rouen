@@ -4,27 +4,48 @@ title: Authentification
 
 # Authentification
 
-La majorité des endpoints sont publics. Certains endpoints sensibles
-(par ex. `GET /api/v1/gitea-info/:username`) sont protégés par un middleware
-`checkToken` (`src/utils/token.ts`) qui attend un **Bearer token** :
+La majorité des endpoints sont **publics**. Seuls les endpoints sensibles
+(par ex. [`GET /api/v1/gitea-info/:username`](/reference/gitea)) sont
+protégés par le middleware `checkToken` (`src/utils/token.ts`).
+
+## Mécanisme
+
+Le client envoie un token Bearer dans le header `Authorization` :
 
 ```http
-Authorization: Bearer <ACCESS_TOKEN>
+Authorization: Bearer <token-gitea>
 ```
+
+Le middleware :
+
+1. Forwarde le token à `https://zone01normandie.org/git/api/v1/user`
+   (API Gitea de Zone01 Normandie).
+2. Si Gitea répond `200`, lit `userData.is_admin`.
+3. Autorise la requête **uniquement si l'utilisateur est admin Gitea**.
+
+> Le token attendu est donc un **Personal Access Token Gitea** valide,
+> appartenant à un compte admin. Pas un JWT 01 Edu.
+
+## Réponses d'erreur
+
+| Status | Body                                                    | Cause                                       |
+| ------ | ------------------------------------------------------- | ------------------------------------------- |
+| 400    | `{ "error": "Token manquant ou vide" }`                 | Header `Authorization` absent ou vide       |
+| 403    | `{ "error": "Token invalide" }`                         | Gitea refuse le token (`401`/`403` upstream)|
+| 403    | `{ "error": "Access denied. Admins only." }`            | Token valide mais utilisateur non-admin     |
+| 500    | `{ "error": "Erreur interne lors de la vérification du token" }` | Gitea injoignable / réseau           |
 
 ## Exemple
 
 ```bash
-curl -H "Authorization: Bearer $ACCESS_TOKEN" \
-     https://api.zone01normandie.org/api/v1/gitea-info/john
+curl -H "Authorization: Bearer $GITEA_TOKEN" \
+     https://api-zone01-rouen.deno.dev/api/v1/gitea-info/alice
 ```
 
-## Échec d'authentification
+## Comment obtenir un token
 
-Si le header est absent ou invalide, l'API renvoie :
-
-```json
-{ "error": "Unauthorized" }
-```
-
-avec un code HTTP `401`.
+1. Se connecter à https://zone01normandie.org/git
+2. Avatar → **Settings** → **Applications**
+3. **Generate New Token** avec un scope minimal (`read:user` suffit pour
+   l'usage admin actuel).
+4. Le compte doit avoir le flag `is_admin = true` côté Gitea.

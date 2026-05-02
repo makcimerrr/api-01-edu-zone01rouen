@@ -19,7 +19,7 @@ Endpoints destinés au bot Discord interne :
 
 ## Lister les technologies
 
-<Endpoint method="GET" path="/api/v1/discord/technologies" />
+<Endpoint method="GET" path="/api/v1/discord/technologies" source="src/api/v1/discord.ts" />
 
 ### Réponse `200`
 
@@ -37,7 +37,7 @@ Endpoints destinés au bot Discord interne :
 
 ## Récupérer un champ de configuration
 
-<Endpoint method="GET" path="/api/v1/discord/:name/config" />
+<Endpoint method="GET" path="/api/v1/discord/:name/config" source="src/api/v1/discord.ts" />
 
 Lit une colonne ciblée dans `discord_config`. Le nom est validé contre une
 **liste blanche** pour empêcher l'injection SQL.
@@ -82,14 +82,14 @@ channel_progress_p1_2025
 ### Exemple
 
 ```bash
-curl https://api.zone01normandie.org/api/v1/discord/guild_id/config
+curl $API/api/v1/discord/guild_id/config
 ```
 
 ---
 
 ## Récupérer la configuration complète
 
-<Endpoint method="GET" path="/api/v1/discord/config/full" />
+<Endpoint method="GET" path="/api/v1/discord/config/full" source="src/api/v1/discord.ts" />
 
 Renvoie l'intégralité de la première ligne de `discord_config`. Les `BIGINT`
 sont automatiquement convertis en `number` pour la sérialisation JSON.
@@ -119,7 +119,7 @@ sont automatiquement convertis en `number` pour la sérialisation JSON.
 
 ## Lister les écoles interdites
 
-<Endpoint method="GET" path="/api/v1/discord/forbidden-schools" />
+<Endpoint method="GET" path="/api/v1/discord/forbidden-schools" source="src/api/v1/discord.ts" />
 
 ### Réponse `200`
 
@@ -136,7 +136,7 @@ sont automatiquement convertis en `number` pour la sérialisation JSON.
 
 ## Lister les requêtes d'emploi
 
-<Endpoint method="GET" path="/api/v1/discord/job-queries" />
+<Endpoint method="GET" path="/api/v1/discord/job-queries" source="src/api/v1/discord.ts" />
 
 Renvoie tous les enregistrements de la table `job_queries` (templates de
 recherches LinkedIn / Welcome to the Jungle / Indeed utilisés par le bot).

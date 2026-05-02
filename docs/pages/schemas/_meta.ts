@@ -1,7 +1,8 @@
 export default {
-  "promotion": "Promotion",
-  "project": "Project",
-  "holiday": "Holiday",
+  index: "Vue d'ensemble",
+  promotion: "Promotion",
   "promo-config": "PromoConfig",
-  "discord-user": "DiscordUser"
-}
+  project: "Project",
+  holiday: "Holiday",
+  "discord-user": "DiscordUser",
+};

@@ -1,0 +1,22 @@
+---
+title: API Explorer
+---
+
+import { ApiExplorer } from "../components/ApiExplorer";
+
+# API Explorer
+
+Vue interactive générée à partir de [`openapi.yaml`](/openapi.yaml). Permet
+de tester chaque endpoint directement depuis la doc.
+
+<ApiExplorer />
+
+## Spec brute
+
+- [Télécharger `openapi.yaml`](/openapi.yaml)
+- Importer dans **Postman** : File → Import → coller l'URL ci-dessus.
+- Importer dans **Insomnia** : Application → Preferences → Import.
+- Générer un client typé :
+  ```bash
+  npx openapi-typescript /openapi.yaml -o api-types.ts
+  ```

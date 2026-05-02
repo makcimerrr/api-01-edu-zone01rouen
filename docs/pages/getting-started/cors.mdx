@@ -1,0 +1,41 @@
+---
+title: CORS
+---
+
+# CORS
+
+## Origines autorisées
+
+Configurées dans `src/server.ts` via `oakCors` :
+
+```ts
+app.use(oakCors({
+  origin: [
+    "https://admin-dashboard-blue-one.vercel.app",
+    "http://localhost:3000",
+  ],
+}));
+```
+
+| Origine                                          | Usage                  |
+| ------------------------------------------------ | ---------------------- |
+| `https://admin-dashboard-blue-one.vercel.app`    | Dashboard d'admin prod |
+| `http://localhost:3000`                          | Dev frontend local     |
+
+Toute autre origine sera bloquée par le navigateur (preflight `OPTIONS`
+sans header `Access-Control-Allow-Origin` correspondant).
+
+## Ajouter une origine
+
+Modifier le tableau dans `src/server.ts` puis redéployer. Les wildcards
+(`*`) ne sont pas activés.
+
+## Côté serveur ↔ serveur
+
+CORS est une protection navigateur ; un appel depuis un script Node/Deno/Go
+n'est pas concerné — les calls cURL fonctionnent toujours.
+
+## Méthodes & headers acceptés
+
+Tous (`oakCors` autorise par défaut `GET`, `POST`, `PUT`, `DELETE`, et les
+headers `Content-Type`, `Authorization`).

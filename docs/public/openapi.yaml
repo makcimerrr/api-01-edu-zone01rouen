@@ -1,0 +1,839 @@
+openapi: 3.1.0
+info:
+  title: API 01 Edu — Zone01 Rouen
+  description: |
+    REST API (Deno + Oak) qui expose les données pédagogiques de Zone01 Rouen
+    au-dessus de la plateforme 01 Edu : utilisateurs, promotions, projets,
+    Discord, Gitea, etc.
+  version: "1.0.0"
+  contact:
+    name: Maxime Dubois
+    url: https://github.com/makcimerrr/api-01-edu-zone01rouen
+servers:
+  - url: https://api-zone01-rouen.deno.dev
+    description: Production (Deno Deploy)
+  - url: http://localhost:8000
+    description: Local
+
+tags:
+  - name: Users
+  - name: Promotions
+  - name: Promo configs
+  - name: Projects
+  - name: Holidays
+  - name: Discord
+  - name: Discord users
+  - name: Gitea
+  - name: Toad
+  - name: Piscine
+  - name: Specialty
+
+components:
+  securitySchemes:
+    GiteaBearer:
+      type: http
+      scheme: bearer
+      description: Personal Access Token Gitea (compte admin requis)
+
+  parameters:
+    EventId:
+      name: eventId
+      in: path
+      required: true
+      schema: { type: integer }
+      description: ID d'event 01 Edu
+
+  responses:
+    BadRequest:
+      description: Paramètre manquant ou invalide
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    NotFound:
+      description: Ressource introuvable
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    Conflict:
+      description: Conflit (clé déjà existante)
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    Internal:
+      description: Erreur interne
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+
+    DiscordError:
+      type: object
+      properties:
+        success: { type: boolean, enum: [false] }
+        message: { type: string }
+      required: [success, message]
+
+    User:
+      type: object
+      properties:
+        id: { type: integer }
+        login: { type: string }
+        firstName: { type: string }
+        lastName: { type: string }
+        auditRatio: { type: number }
+        auditsAssigned: { type: integer }
+        campus: { type: string }
+        email: { type: string }
+        githubId: { type: string }
+        discordId: { type: string }
+        discordDMChannelId: { type: string }
+
+    Promotion:
+      type: object
+      properties:
+        promoId: { type: string }
+        name: { type: string }
+        isArchived: { type: boolean }
+        archivedAt: { type: string, format: date-time, nullable: true }
+        archivedReason: { type: string, nullable: true }
+      required: [promoId, name, isArchived]
+
+    Progress:
+      type: object
+      properties:
+        user:
+          type: object
+          properties:
+            login: { type: string }
+            firstName: { type: string }
+            lastName: { type: string }
+        grade: { type: number, nullable: true }
+        group:
+          type: object
+          properties:
+            status: { type: string, enum: [setup, working, audit, finished] }
+            id: { type: integer }
+            captainLogin: { type: string }
+            members:
+              type: array
+              items:
+                type: object
+                properties:
+                  userLogin: { type: string }
+            createdAt: { type: string, format: date-time }
+            startedWorkingAt: { type: string, format: date-time }
+            auditors: { type: array, items: { type: object } }
+            results: { type: array, items: { type: object } }
+        object:
+          type: object
+          properties:
+            name: { type: string }
+
+    Project:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        projectTimeWeek: { type: integer }
+        category: { type: string }
+        sortIndex: { type: integer }
+      required: [name, projectTimeWeek, category]
+
+    CreateProject:
+      type: object
+      properties:
+        name: { type: string }
+        projectTimeWeek: { type: integer }
+        category: { type: string }
+        sortIndex: { type: integer }
+      required: [name, projectTimeWeek, category]
+
+    Holiday:
+      type: object
+      properties:
+        id: { type: integer }
+        label: { type: string }
+        start: { type: string, format: date }
+        end: { type: string, format: date }
+      required: [label, start, end]
+
+    CreateHoliday:
+      type: object
+      properties:
+        label: { type: string }
+        start: { type: string, format: date }
+        end: { type: string, format: date }
+      required: [label, start, end]
+
+    PromoConfig:
+      type: object
+      properties:
+        key: { type: string }
+        eventId: { type: integer }
+        title: { type: string }
+        start: { type: string, format: date }
+        piscineJsStart: { type: string, format: date, nullable: true }
+        piscineJsEnd: { type: string, format: date, nullable: true }
+        piscineRustStart: { type: string, format: date, nullable: true }
+        piscineRustEnd: { type: string, format: date, nullable: true }
+        end: { type: string, format: date }
+        currentProject: { type: string, nullable: true }
+      required: [key, eventId, title, start, end]
+
+    DiscordUser:
+      type: object
+      properties:
+        id: { type: integer }
+        login: { type: string }
+        discord_id: { type: string }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+      required: [login, discord_id]
+
+    UpsertDiscordUser:
+      type: object
+      properties:
+        login: { type: string }
+        discord_id: { type: string }
+      required: [login, discord_id]
+
+    Specialty:
+      type: object
+      properties:
+        name: { type: string }
+        totalProjects: { type: integer }
+        projects:
+          type: array
+          items: { type: string }
+
+    SpecialtyStudents:
+      type: object
+      properties:
+        specialty: { type: string }
+        totalProjects: { type: integer }
+        projectsList:
+          type: array
+          items: { type: string }
+        studentsCount: { type: integer }
+        students:
+          type: array
+          items:
+            type: object
+            properties:
+              login: { type: string }
+              firstName: { type: string }
+              lastName: { type: string }
+              completedProjects:
+                type: array
+                items: { type: string }
+              currentProject: { type: string, nullable: true }
+              progression:
+                type: object
+                properties:
+                  current: { type: integer }
+                  total: { type: integer }
+
+paths:
+  /api/v1/users:
+    get:
+      tags: [Users]
+      summary: Liste les utilisateurs
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: array
+                        items: { $ref: "#/components/schemas/User" }
+        "500": { $ref: "#/components/responses/Internal" }
+
+  /api/v1/user-info/{username}:
+    get:
+      tags: [Users]
+      summary: Détail d'un utilisateur
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: array
+                        items: { $ref: "#/components/schemas/User" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "500": { $ref: "#/components/responses/Internal" }
+
+  /api/v1/promotions:
+    get:
+      tags: [Promotions]
+      summary: Liste les promotions actives
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Promotion" }
+        "500": { $ref: "#/components/responses/Internal" }
+
+  /api/v1/promotions/{eventId}/students:
+    get:
+      tags: [Promotions]
+      summary: Progression sur le tronc commun
+      parameters:
+        - $ref: "#/components/parameters/EventId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  progress:
+                    type: array
+                    items: { $ref: "#/components/schemas/Progress" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "500": { $ref: "#/components/responses/Internal" }
+
+  /api/v1/promotions/{eventId}/students/optionals:
+    get:
+      tags: [Promotions]
+      summary: Progression sur les projets optionnels
+      parameters:
+        - $ref: "#/components/parameters/EventId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  progress:
+                    type: array
+                    items: { $ref: "#/components/schemas/Progress" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "500": { $ref: "#/components/responses/Internal" }
+
+  /api/v1/promotions/{eventId}/students/additionals:
+    get:
+      tags: [Promotions]
+      summary: Progression sur les projets additionnels
+      parameters:
+        - $ref: "#/components/parameters/EventId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  progress:
+                    type: array
+                    items: { $ref: "#/components/schemas/Progress" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "500": { $ref: "#/components/responses/Internal" }
+
+  /api/v1/promo-configs:
+    get:
+      tags: [Promo configs]
+      summary: Liste toutes les configs
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/PromoConfig" }
+    post:
+      tags: [Promo configs]
+      summary: Crée une config
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PromoConfig" }
+      responses:
+        "201":
+          description: Créée
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PromoConfig" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/v1/promo-configs/{key}:
+    parameters:
+      - name: key
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Promo configs]
+      summary: Récupère une config
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PromoConfig" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [Promo configs]
+      summary: Met à jour une config
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PromoConfig" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PromoConfig" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    delete:
+      tags: [Promo configs]
+      summary: Supprime une config
+      responses:
+        "204": { description: Supprimée }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/v1/projects:
+    get:
+      tags: [Projects]
+      summary: Liste les projets
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Project" }
+    post:
+      tags: [Projects]
+      summary: Crée un projet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateProject" }
+      responses:
+        "201":
+          description: Créé
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Project" }
+
+  /api/v1/projects/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer }
+    get:
+      tags: [Projects]
+      summary: Détail d'un projet
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Project" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [Projects]
+      summary: Met à jour un projet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateProject" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Project" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    delete:
+      tags: [Projects]
+      summary: Supprime un projet
+      responses:
+        "204": { description: Supprimé }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/v1/holidays:
+    get:
+      tags: [Holidays]
+      summary: Liste les vacances
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Holiday" }
+    post:
+      tags: [Holidays]
+      summary: Crée une période
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateHoliday" }
+      responses:
+        "201":
+          description: Créée
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Holiday" }
+
+  /api/v1/holidays/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer }
+    get:
+      tags: [Holidays]
+      summary: Détail d'une période
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Holiday" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [Holidays]
+      summary: Met à jour une période
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateHoliday" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Holiday" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    delete:
+      tags: [Holidays]
+      summary: Supprime une période
+      responses:
+        "204": { description: Supprimée }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/v1/discord/technologies:
+    get:
+      tags: [Discord]
+      summary: Liste les technologies
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  technologies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        name: { type: string }
+
+  /api/v1/discord/{name}/config:
+    get:
+      tags: [Discord]
+      summary: Récupère un champ de configuration
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - channel_inter_promo
+              - forum_channel_id
+              - forum_channel_id_cdi
+              - role_ping_cdi
+              - role_ping_alternance
+              - guild_id
+              - role_p1_2023
+              - role_p2_2023
+              - role_p1_2024
+              - role_help
+              - channel_progress_p1_2022
+              - channel_progress_p1_2023
+              - channel_progress_p2_2023
+              - channel_progress_p1_2024
+              - channel_progress_p1_2025
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  name: { type: string }
+                  value: { type: number }
+        "400":
+          description: Champ hors liste blanche
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DiscordError" }
+
+  /api/v1/discord/config/full:
+    get:
+      tags: [Discord]
+      summary: Configuration complète
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  config: { type: object, additionalProperties: true }
+        "404":
+          description: Aucune configuration
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DiscordError" }
+
+  /api/v1/discord/forbidden-schools:
+    get:
+      tags: [Discord]
+      summary: Écoles interdites
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  schools:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        name: { type: string }
+
+  /api/v1/discord/job-queries:
+    get:
+      tags: [Discord]
+      summary: Templates de requêtes d'emploi
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  queries:
+                    type: array
+                    items: { type: object, additionalProperties: true }
+
+  /api/v1/discord-users:
+    get:
+      tags: [Discord users]
+      summary: Liste tous les liens
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/DiscordUser" }
+    put:
+      tags: [Discord users]
+      summary: Upsert un lien
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UpsertDiscordUser" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DiscordUser" }
+
+  /api/v1/discord-users/{login}:
+    parameters:
+      - name: login
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Discord users]
+      summary: Récupère un lien
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DiscordUser" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    delete:
+      tags: [Discord users]
+      summary: Supprime un lien
+      responses:
+        "204": { description: Supprimé }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/v1/gitea-info/{username}:
+    get:
+      tags: [Gitea]
+      summary: Profil Gitea + heatmap
+      security:
+        - GiteaBearer: []
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user: { type: object, additionalProperties: true }
+                  heatmap:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        timestamp: { type: integer }
+                        contributions: { type: integer }
+        "400":
+          description: Token absent
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "403":
+          description: Token rejeté ou compte non admin
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "500": { $ref: "#/components/responses/Internal" }
+
+  /api/v1/toad/sessions:
+    get:
+      tags: [Toad]
+      summary: Sessions Toad
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  toad_sessions:
+                    type: array
+                    items: { type: object, additionalProperties: true }
+
+  /api/v1/piscine/progress:
+    get:
+      tags: [Piscine]
+      summary: Avancement Piscine Go
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  progress:
+                    type: array
+                    items: { type: object, additionalProperties: true }
+
+  /api/v1/specialties:
+    get:
+      tags: [Specialty]
+      summary: Liste les spécialités
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Specialty" }
+
+  /api/v1/specialties/{name}/students:
+    get:
+      tags: [Specialty]
+      summary: Étudiants d'une spécialité
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [cybersecurity, ai, blockchain, devops, game, mobile-application]
+        - name: eventId
+          in: query
+          required: false
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SpecialtyStudents" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+

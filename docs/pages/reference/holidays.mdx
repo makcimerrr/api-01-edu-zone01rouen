@@ -19,7 +19,7 @@ Voir aussi le [schéma Holiday](/schemas/holiday).
 
 ## Lister les vacances
 
-<Endpoint method="GET" path="/api/v1/holidays" />
+<Endpoint method="GET" path="/api/v1/holidays" source="src/api/v1/holidays.ts" />
 
 ### Réponse `200`
 
@@ -38,7 +38,7 @@ Voir aussi le [schéma Holiday](/schemas/holiday).
 
 ## Récupérer une période
 
-<Endpoint method="GET" path="/api/v1/holidays/:id" />
+<Endpoint method="GET" path="/api/v1/holidays/:id" source="src/api/v1/holidays.ts" />
 
 | Nom  | Type   | Localisation | Description           |
 | ---- | ------ | ------------ | --------------------- |
@@ -54,7 +54,7 @@ Voir aussi le [schéma Holiday](/schemas/holiday).
 
 ## Créer une période
 
-<Endpoint method="POST" path="/api/v1/holidays" />
+<Endpoint method="POST" path="/api/v1/holidays" source="src/api/v1/holidays.ts" />
 
 ### Body (JSON)
 
@@ -80,7 +80,7 @@ L'objet créé.
 
 ## Mettre à jour une période
 
-<Endpoint method="PUT" path="/api/v1/holidays/:id" />
+<Endpoint method="PUT" path="/api/v1/holidays/:id" source="src/api/v1/holidays.ts" />
 
 Tous les champs du body sont optionnels (cf. `UpdateHolidayDTO`).
 
@@ -88,7 +88,7 @@ Tous les champs du body sont optionnels (cf. `UpdateHolidayDTO`).
 
 ## Supprimer une période
 
-<Endpoint method="DELETE" path="/api/v1/holidays/:id" />
+<Endpoint method="DELETE" path="/api/v1/holidays/:id" source="src/api/v1/holidays.ts" />
 
 ### Réponse
 

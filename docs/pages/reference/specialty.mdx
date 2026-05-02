@@ -17,7 +17,7 @@ défini.
 
 ## Lister les spécialités disponibles
 
-<Endpoint method="GET" path="/api/v1/specialties" />
+<Endpoint method="GET" path="/api/v1/specialties" source="src/api/v1/specialty.ts" />
 
 ### Réponse `200`
 
@@ -58,7 +58,7 @@ défini.
 
 ## Étudiants d'une spécialité
 
-<Endpoint method="GET" path="/api/v1/specialties/:name/students" />
+<Endpoint method="GET" path="/api/v1/specialties/:name/students" source="src/api/v1/specialty.ts" />
 
 Renvoie la liste des étudiants ayant un avancement détecté sur les projets
 de la spécialité, avec leur **progression calculée** (projet courant inclus).
@@ -113,5 +113,5 @@ de la spécialité, avec leur **progression calculée** (projet courant inclus).
 ### Exemple
 
 ```bash
-curl https://api.zone01normandie.org/api/v1/specialties/cybersecurity/students?eventId=72
+curl $API/api/v1/specialties/cybersecurity/students?eventId=72
 ```

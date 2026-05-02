@@ -1,0 +1,19 @@
+---
+title: Schémas
+---
+
+# Schémas de données
+
+Tables Postgres (Drizzle) et DTOs des endpoints qui en CRUD.
+
+| Schéma                                  | Endpoints liés                       |
+| --------------------------------------- | ------------------------------------ |
+| [Promotion](/schemas/promotion)         | [/promotions](/reference/promotions) |
+| [PromoConfig](/schemas/promo-config)    | [/promo-configs](/reference/promo-configs) |
+| [Project](/schemas/project)             | [/projects](/reference/projects)     |
+| [Holiday](/schemas/holiday)             | [/holidays](/reference/holidays)     |
+| [DiscordUser](/schemas/discord-user)    | [/discord-users](/reference/discord-users) |
+
+> Les autres endpoints (users, promotions/students, toad, piscine,
+> specialty, discord/*) ne stockent rien localement — ils projettent
+> directement les données 01 Edu (GraphQL) ou la table `discord_config`.
