@@ -28,14 +28,24 @@ app.use(async (ctx, next) => {
     if (!pathname.startsWith("/docs")) return next();
 
     let rel = pathname.replace(/^\/docs\/?/, "") || "index.html";
-    // trailingSlash: true → /docs/foo/ doit servir foo/index.html
     if (rel.endsWith("/")) rel += "index.html";
     if (!/\.[a-zA-Z0-9]+$/.test(rel)) rel += "/index.html";
 
     try {
         await send(ctx, rel, { root: "./docs/out" });
+        return;
     } catch {
+        // fall through
+    }
+
+    try {
         await send(ctx, "404.html", { root: "./docs/out" });
+    } catch {
+        ctx.response.status = 503;
+        ctx.response.type = "text/plain; charset=utf-8";
+        ctx.response.body =
+            "Documentation indisponible : le build Nextra (docs/out) est manquant.\n" +
+            "Lancer `cd docs && npm ci && npm run build` avant de démarrer le serveur.";
     }
 });
 
