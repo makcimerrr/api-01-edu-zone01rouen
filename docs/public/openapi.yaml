@@ -427,6 +427,47 @@ paths:
         "204": { description: Supprimée }
         "404": { $ref: "#/components/responses/NotFound" }
 
+  /api/v1/projects/catalog:
+    get:
+      tags: [Projects]
+      summary: Catalogue complet (toutes catégories de projets)
+      description: |
+        Renvoie l'union des projets hardcodés du tronc commun (Go, JS/Rust),
+        des projets optionnels, des projets additionnels et des projets de
+        spécialité. Source de vérité pour les filtres GraphQL.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total: { type: integer }
+                  counts:
+                    type: object
+                    properties:
+                      troncCommun: { type: integer }
+                      optional: { type: integer }
+                      additional: { type: integer }
+                  troncCommun:
+                    type: array
+                    items: { type: string }
+                  optional:
+                    type: array
+                    items: { type: string }
+                  additional:
+                    type: array
+                    items: { type: string }
+                  specialties:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items: { type: string }
+                  all:
+                    type: array
+                    items: { type: string }
+
   /api/v1/projects:
     get:
       tags: [Projects]

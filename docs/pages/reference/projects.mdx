@@ -17,7 +17,69 @@ Voir aussi le [schéma Project](/schemas/project).
 
 ---
 
-## Lister les projets
+## Catalogue complet (tronc commun + optionnels + additionnels + spécialités)
+
+<Endpoint method="GET" path="/api/v1/projects/catalog" source="src/api/v1/catalog.ts" />
+
+Renvoie **tous les projets connus de l'API**, toutes catégories confondues
+(Go, JS/Rust, Java, spécialités, ateliers). C'est la source de vérité
+utilisée par les filtres GraphQL des routes `/promotions/.../students*`
+et `/specialties/.../students`.
+
+> ⚠️ Différent de [`GET /api/v1/projects`](#lister-les-projets-de-la-base-locale)
+> qui renvoie le **catalogue local** stocké en base (table `projects`).
+> Le catalogue ci-dessous est la **liste hardcodée** de
+> `src/services/projects.ts`.
+
+### Réponse `200`
+
+```json
+{
+  "total": 124,
+  "counts": {
+    "troncCommun": 27,
+    "optional": 24,
+    "additional": 75
+  },
+  "troncCommun": ["Lets-Travel", "Travel-Plan", "Neo-4-Flix", "..."],
+  "optional": ["0-Shell-Scripting", "Forum-Authentication", "..."],
+  "additional": ["Math-Skills", "Push-Swap", "Kaggle-Titanic", "..."],
+  "specialties": {
+    "cybersecurity": ["Passive", "Inspector-Image", "..."],
+    "ai": ["Kaggle-Titanic", "NLP-Scrapper", "..."],
+    "blockchain": ["NFT-Marketplace", "..."],
+    "devops": ["Deep-In-Net", "..."],
+    "game": ["Firing-Range", "..."],
+    "mobile-application": ["Twenty-Forty-Eight", "..."]
+  },
+  "all": ["Active", "Add-VM", "..."]
+}
+```
+
+| Champ          | Type                       | Description                                                |
+| -------------- | -------------------------- | ---------------------------------------------------------- |
+| `total`        | number                     | Nombre de projets uniques toutes catégories confondues     |
+| `counts`       | object                     | Nombre de projets par catégorie                            |
+| `troncCommun`  | string[]                   | Projets obligatoires (Go puis JS/Rust)                     |
+| `optional`     | string[]                   | Projets bonus (sous-tâches du tronc commun)                |
+| `additional`   | string[]                   | Projets additionnels (spécialités, ateliers softskills)    |
+| `specialties`  | Record\<string, string[]\> | Sous-listes ordonnées par spécialité                       |
+| `all`          | string[]                   | Union dédupliquée des trois catégories, triée alpha        |
+
+### Exemple
+
+```bash
+curl $API/api/v1/projects/catalog | jq '.counts'
+# {
+#   "troncCommun": 27,
+#   "optional": 24,
+#   "additional": 75
+# }
+```
+
+---
+
+## Lister les projets de la base locale
 
 <Endpoint method="GET" path="/api/v1/projects" source="src/api/v1/projects.ts" />
 

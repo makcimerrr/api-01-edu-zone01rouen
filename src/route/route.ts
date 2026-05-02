@@ -45,6 +45,7 @@ import {getToadSessionsHandler} from "../api/v1/toad.ts";
 import {getPiscineProgressHandler} from "../api/v1/piscine.ts";
 import {getAdditionalPromotionProgress} from "../api/v1/additional.ts";
 import {getSpecialtyStudents, getSpecialtiesList} from "../api/v1/specialty.ts";
+import {getProjectsCatalog} from "../api/v1/catalog.ts";
 
 const router = new Router();
 
@@ -80,6 +81,7 @@ async function loadPromotionController() {
 async function loadProjectsController() {
     try {
         router.get(`/${API_BASE_PATH}/${API_VERSION}/projects`, getProjectsHandler)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/projects/catalog`, getProjectsCatalog)
             .get(`/${API_BASE_PATH}/${API_VERSION}/projects/:id`, getProjectHandler)
             .post(`/${API_BASE_PATH}/${API_VERSION}/projects`, createProjectHandler)
             .put(`/${API_BASE_PATH}/${API_VERSION}/projects/:id`, updateProjectHandler)
