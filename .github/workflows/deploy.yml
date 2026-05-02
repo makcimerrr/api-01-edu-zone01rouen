@@ -41,3 +41,5 @@ jobs:
           entrypoint: src/server.ts
           # docs/out doit être inclus dans l'upload
           include: "src,deps.ts,config,deno.json,deno.lock,docs/out"
+        env:
+          DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
