@@ -1,0 +1,76 @@
+---
+title: Health
+---
+
+import { Endpoint } from "../../components/Endpoint";
+
+# Health
+
+Sonde de santé de l'API. Vérifie en parallèle Postgres et l'API Gitea
+amont, renvoie l'état agrégé. Pensé pour des **uptime checks** externes
+(Better Stack, UptimeRobot, …) et pour Deno Deploy.
+
+> Source : `src/api/v1/health.ts`.
+
+---
+
+## Health check
+
+<Endpoint method="GET" path="/api/v1/health" source="src/api/v1/health.ts" />
+
+### Comportement
+
+- Exécute en parallèle :
+  - `SELECT 1` sur Postgres (Drizzle)
+  - `GET https://zone01normandie.org/git/api/v1/version` (timeout 2s)
+- Renvoie `200` si la **base de données** répond, peu importe l'état
+  Gitea.
+- Renvoie `503` si Postgres est down — l'API ne peut alors plus servir la
+  majorité des endpoints.
+
+### Réponse `200`
+
+```json
+{
+  "status": "ok",
+  "version": "v1",
+  "uptimeSeconds": 1842,
+  "timestamp": "2026-05-02T13:42:00.000Z",
+  "dependencies": {
+    "database": { "status": "ok", "latencyMs": 4 },
+    "gitea":    { "status": "ok", "latencyMs": 187 }
+  }
+}
+```
+
+### Réponse `503` (dégradé)
+
+```json
+{
+  "status": "degraded",
+  "version": "v1",
+  "uptimeSeconds": 1842,
+  "timestamp": "2026-05-02T13:42:00.000Z",
+  "dependencies": {
+    "database": { "status": "down", "latencyMs": 2003, "error": "connect ETIMEDOUT" },
+    "gitea":    { "status": "ok", "latencyMs": 187 }
+  }
+}
+```
+
+### Champs
+
+| Champ                   | Type   | Description                                            |
+| ----------------------- | ------ | ------------------------------------------------------ |
+| `status`                | string | `ok` ou `degraded`                                     |
+| `version`               | string | Version d'API (`v1`)                                   |
+| `uptimeSeconds`         | number | Temps écoulé depuis le démarrage du process            |
+| `timestamp`             | string | ISO-8601 UTC                                           |
+| `dependencies.database` | object | `{ status, latencyMs, error? }`                        |
+| `dependencies.gitea`    | object | `{ status, latencyMs, error? }`                        |
+
+### Exemple — uptime check
+
+```bash
+curl -sf $API/api/v1/health > /dev/null && echo OK || echo DOWN
+```

@@ -40,4 +40,14 @@ export class PromotionService {
     async getActivePromotions() {
         return await this.repository.findAll(true);
     }
+
+    async getPromotionById(id: string) {
+        const promotion = await this.repository.findById(id);
+
+        if (!promotion) {
+            throw new NotFoundError("Promotion");
+        }
+
+        return promotion;
+    }
 }

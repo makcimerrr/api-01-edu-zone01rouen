@@ -8,6 +8,12 @@ import { Endpoint } from "../components/Endpoint";
 
 Vue d'ensemble de l'API. Tous les chemins sont préfixés par `/api/v1`.
 
+## Health
+
+<Endpoint method="GET" path="/api/v1/health" />
+
+→ [Détails](/reference/health)
+
 ## Users
 
 <Endpoint method="GET" path="/api/v1/users" />
@@ -18,6 +24,9 @@ Vue d'ensemble de l'API. Tous les chemins sont préfixés par `/api/v1`.
 ## Promotions & progression
 
 <Endpoint method="GET" path="/api/v1/promotions" />
+<Endpoint method="POST" path="/api/v1/promotions" />
+<Endpoint method="GET" path="/api/v1/promotions/:promoId" />
+<Endpoint method="POST" path="/api/v1/promotions/:promoId/archive" />
 <Endpoint method="GET" path="/api/v1/promotions/:eventId/students" />
 <Endpoint method="GET" path="/api/v1/promotions/:eventId/students/optionals" />
 <Endpoint method="GET" path="/api/v1/promotions/:eventId/students/additionals" />

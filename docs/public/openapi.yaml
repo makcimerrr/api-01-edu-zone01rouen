@@ -16,6 +16,7 @@ servers:
     description: Local
 
 tags:
+  - name: Health
   - name: Users
   - name: Promotions
   - name: Promo configs
@@ -241,6 +242,46 @@ components:
                   total: { type: integer }
 
 paths:
+  /api/v1/health:
+    get:
+      tags: [Health]
+      summary: Sonde de santé
+      description: Vérifie Postgres + Gitea, renvoie 503 si la DB est down.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, enum: [ok] }
+                  version: { type: string }
+                  uptimeSeconds: { type: integer }
+                  timestamp: { type: string, format: date-time }
+                  dependencies:
+                    type: object
+                    properties:
+                      database:
+                        type: object
+                        properties:
+                          status: { type: string }
+                          latencyMs: { type: integer }
+                      gitea:
+                        type: object
+                        properties:
+                          status: { type: string }
+                          latencyMs: { type: integer }
+        "503":
+          description: Dégradé (Postgres injoignable)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, enum: [degraded] }
+                  dependencies: { type: object, additionalProperties: true }
+
   /api/v1/users:
     get:
       tags: [Users]
@@ -300,6 +341,67 @@ paths:
                 type: array
                 items: { $ref: "#/components/schemas/Promotion" }
         "500": { $ref: "#/components/responses/Internal" }
+    post:
+      tags: [Promotions]
+      summary: Crée une promotion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                promoId: { type: string }
+                name: { type: string }
+              required: [promoId, name]
+      responses:
+        "201":
+          description: Créée
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Promotion" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/v1/promotions/{promoId}:
+    get:
+      tags: [Promotions]
+      summary: Récupère une promotion par ID
+      parameters:
+        - name: promoId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Promotion" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/v1/promotions/{promoId}/archive:
+    post:
+      tags: [Promotions]
+      summary: Archive une promotion
+      parameters:
+        - name: promoId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason: { type: string }
+              required: [reason]
+      responses:
+        "204": { description: Archivée }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
 
   /api/v1/promotions/{eventId}/students:
     get:

@@ -1,5 +1,6 @@
 export default {
   index: "Vue d'ensemble",
+  health: "Health",
   users: "Users",
   promotions: "Promotions",
   "promo-configs": "Promo configs",

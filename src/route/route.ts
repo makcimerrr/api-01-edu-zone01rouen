@@ -46,6 +46,12 @@ import {getPiscineProgressHandler} from "../api/v1/piscine.ts";
 import {getAdditionalPromotionProgress} from "../api/v1/additional.ts";
 import {getSpecialtyStudents, getSpecialtiesList} from "../api/v1/specialty.ts";
 import {getProjectsCatalog} from "../api/v1/catalog.ts";
+import {getHealthHandler} from "../api/v1/health.ts";
+import {
+    archivePromotionHandler,
+    createPromotionHandler,
+    getPromotionByIdHandler,
+} from "../api/v1/promotions_admin.ts";
 
 const router = new Router();
 
@@ -68,6 +74,9 @@ async function loadPromotionController() {
         router.get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students`, getPromotionProgress)
             .get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students/optionals`, getOptionalPromotionProgress)
             .get(`/${API_BASE_PATH}/${API_VERSION}/promotions`, getPromotionsHandler)
+            .post(`/${API_BASE_PATH}/${API_VERSION}/promotions`, createPromotionHandler)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:promoId`, getPromotionByIdHandler)
+            .post(`/${API_BASE_PATH}/${API_VERSION}/promotions/:promoId/archive`, archivePromotionHandler)
             .get(`/${API_BASE_PATH}/${API_VERSION}/promo-configs`, getPromoConfigsHandler)
             .get(`/${API_BASE_PATH}/${API_VERSION}/promo-configs/:key`, getPromoConfigHandler)
             .post(`/${API_BASE_PATH}/${API_VERSION}/promo-configs`, createPromoConfigHandler)
@@ -161,6 +170,14 @@ async function loadPiscineController() {
     }
 }
 
+async function loadHealthController() {
+    try {
+        router.get(`/${API_BASE_PATH}/${API_VERSION}/health`, getHealthHandler);
+    } catch (error) {
+        console.error('Error loading health controller:', error);
+    }
+}
+
 loadUserController().then(r => r);
 loadPromotionController().then(r => r);
 loadGiteaController().then(r => r);
@@ -171,5 +188,6 @@ loadToadController().then(r => r);
 loadAdditionalController().then(r => r);
 loadSpecialtyController().then(r => r);
 loadPiscineController().then(r => r);
+loadHealthController().then(r => r);
 
 export default router;

@@ -41,11 +41,83 @@ Renvoie l'ensemble des promotions **non archivées**, lues depuis la table
 | ---- | ----------------------------------- |
 | 500  | Erreur d'accès à la base Postgres   |
 
-### Exemple
+---
 
-```bash
-curl $API/api/v1/promotions
+## Récupérer une promotion par ID
+
+<Endpoint method="GET" path="/api/v1/promotions/:promoId" source="src/api/v1/promotions_admin.ts" />
+
+| Nom       | Type   | Localisation | Description                       |
+| --------- | ------ | ------------ | --------------------------------- |
+| `promoId` | string | path         | Identifiant libre (ex. `p1-2024`) |
+
+### Erreurs
+
+| Code | Cause              |
+| ---- | ------------------ |
+| 404  | Promotion introuvable |
+
+---
+
+## Créer une promotion
+
+<Endpoint method="POST" path="/api/v1/promotions" source="src/api/v1/promotions_admin.ts" />
+
+### Body (JSON)
+
+```json
+{
+  "promoId": "p1-2026",
+  "name": "Promotion 1 — 2026"
+}
 ```
+
+| Champ     | Type   | Requis | Description                       |
+| --------- | ------ | ------ | --------------------------------- |
+| `promoId` | string | ✅     | Identifiant unique (slug libre)   |
+| `name`    | string | ✅     | Nom affiché (UNIQUE en base)      |
+
+### Réponse `201`
+
+L'objet créé, avec `isArchived: false`.
+
+### Erreurs
+
+| Code | Cause                                          |
+| ---- | ---------------------------------------------- |
+| 400  | `promoId` ou `name` absent                     |
+| 409  | Une promotion avec ce `name` existe déjà       |
+
+---
+
+## Archiver une promotion
+
+<Endpoint method="POST" path="/api/v1/promotions/:promoId/archive" source="src/api/v1/promotions_admin.ts" />
+
+Marque la promotion comme archivée (`isArchived = true`), enregistre la
+date courante dans `archivedAt` et le motif dans `archivedReason`. La
+promotion sort alors de la liste renvoyée par `GET /api/v1/promotions`.
+
+### Body (JSON)
+
+```json
+{ "reason": "Cohorte terminée — diplômés 2026" }
+```
+
+| Champ    | Type   | Requis | Description           |
+| -------- | ------ | ------ | --------------------- |
+| `reason` | string | ✅     | Motif de l'archivage  |
+
+### Réponse
+
+`204 No Content`.
+
+### Erreurs
+
+| Code | Cause                       |
+| ---- | --------------------------- |
+| 400  | `reason` absent             |
+| 404  | Promotion introuvable       |
 
 ---
 

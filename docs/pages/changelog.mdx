@@ -9,6 +9,15 @@ changes** sont marqués 🔴.
 
 ## 2026-05-02
 
+- ➕ Endpoint [`GET /api/v1/health`](/reference/health) : sonde Postgres
+  + Gitea avec latences, renvoie `503` si la DB est down.
+- ➕ Endpoint [`POST /api/v1/promotions`](/reference/promotions) : créer
+  une promotion (le service existait depuis longtemps mais n'était pas
+  routé).
+- ➕ Endpoint [`GET /api/v1/promotions/:promoId`](/reference/promotions) :
+  lookup d'une promotion par ID.
+- ➕ Endpoint [`POST /api/v1/promotions/:promoId/archive`](/reference/promotions) :
+  archive une promotion avec un motif.
 - ➕ Endpoint [`GET /api/v1/projects/catalog`](/reference/projects) :
   catalogue complet des projets (tronc commun + optionnels + additionnels
   + spécialités). Comble l'absence d'une route exposant tous les projets
