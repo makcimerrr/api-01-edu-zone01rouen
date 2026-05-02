@@ -1,0 +1,43 @@
+name: Deploy
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  id-token: write # nécessaire pour l'auth OIDC de deployctl
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Build Nextra docs
+        working-directory: docs
+        run: |
+          npm install
+          npm run build
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v1.x
+
+      - name: Deploy to Deno Deploy
+        uses: denoland/deployctl@v1
+        with:
+          project: "api-zone01-rouen"
+          entrypoint: src/server.ts
+          # docs/out doit être inclus dans l'upload
+          include: "src,deps.ts,config,deno.json,deno.lock,docs/out"

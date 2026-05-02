@@ -1,4 +1,4 @@
-{
+export default {
   "users": "Users",
   "promotions": "Promotions",
   "promo-configs": "Promo configs",

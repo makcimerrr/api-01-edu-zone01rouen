@@ -1,4 +1,4 @@
-{
+export default {
   "promotion": "Promotion",
   "project": "Project",
   "holiday": "Holiday",

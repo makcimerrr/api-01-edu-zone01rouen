@@ -1,4 +1,4 @@
-{
+export default {
   "index": "Accueil",
   "getting-started": "Démarrage",
   "reference": "Référence API",
