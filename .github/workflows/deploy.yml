@@ -6,7 +6,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write # nécessaire pour l'auth OIDC de deployctl
 
 jobs:
   deploy:
@@ -34,12 +33,15 @@ jobs:
         with:
           deno-version: v1.x
 
+      - name: Install deployctl
+        run: deno install -gArf jsr:@deno/deployctl
+
       - name: Deploy to Deno Deploy
-        uses: denoland/deployctl@v1
-        with:
-          project: "api-zone01-rouen"
-          entrypoint: src/server.ts
-          # docs/out doit être inclus dans l'upload
-          include: "src,deps.ts,config,deno.json,deno.lock,docs/out"
         env:
           DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
+        run: |
+          deployctl deploy \
+            --project=api-zone01-rouen \
+            --entrypoint=src/server.ts \
+            --include=src,deps.ts,config,deno.json,deno.lock,docs/out \
+            --prod
