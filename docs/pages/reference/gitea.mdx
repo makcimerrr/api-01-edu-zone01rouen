@@ -1,7 +1,72 @@
 ---
-title: gitea
+title: Gitea
 ---
 
-# gitea
+import { Endpoint } from "../../components/Endpoint";
 
-> 🚧 Page à compléter — voir `src/api/v1/gitea.ts` pour les handlers.
+# Gitea
+
+Proxy authentifié vers l'instance Gitea de Zone01 Normandie
+(`https://zone01normandie.org/git/api/v1`). Renvoie le profil utilisateur
+**et** sa heatmap d'activité en un seul appel.
+
+> Source : `src/api/v1/gitea.ts`. Le middleware `checkToken`
+> (`src/utils/token.ts`) protège l'endpoint.
+
+---
+
+## Récupérer le profil + heatmap d'un utilisateur
+
+<Endpoint method="GET" path="/api/v1/gitea-info/:username" auth />
+
+Effectue **deux requêtes parallèles** vers Gitea :
+
+- `GET /git/api/v1/users/:username`
+- `GET /git/api/v1/users/:username/heatmap`
+
+Le `Bearer token` envoyé par le client est **forwardé tel quel** vers Gitea.
+
+### Paramètres
+
+| Nom        | Type   | Localisation | Description           |
+| ---------- | ------ | ------------ | --------------------- |
+| `username` | string | path         | Login Gitea de l'utilisateur |
+
+### Headers requis
+
+```http
+Authorization: Bearer <token-gitea-valide>
+```
+
+### Réponse `200`
+
+```json
+{
+  "user": {
+    "id": 42,
+    "login": "alice",
+    "full_name": "Alice Martin",
+    "email": "alice@zone01.fr",
+    "avatar_url": "https://…",
+    "created": "2024-09-12T10:00:00Z"
+  },
+  "heatmap": [
+    { "timestamp": 1726099200, "contributions": 4 },
+    { "timestamp": 1726185600, "contributions": 12 }
+  ]
+}
+```
+
+### Erreurs
+
+| Code | Cause                                                |
+| ---- | ---------------------------------------------------- |
+| 401  | Token absent ou rejeté par `checkToken`              |
+| 500  | Erreur de l'API Gitea (status user ou heatmap ≠ 2xx) |
+
+### Exemple
+
+```bash
+curl -H "Authorization: Bearer $GITEA_TOKEN" \
+     https://api.zone01normandie.org/api/v1/gitea-info/alice
+```

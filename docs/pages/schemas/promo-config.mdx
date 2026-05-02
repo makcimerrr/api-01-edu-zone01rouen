@@ -1,7 +1,57 @@
 ---
-title: promo-config
+title: PromoConfig
 ---
 
-# promo-config
+# PromoConfig
 
-> 🚧 À compléter à partir de `src/db/schema/promo_config.schema.ts` et `src/services/dto/promo_config.dto.ts`.
+Configuration métier d'une promotion : dates, événement 01 Edu, fenêtres
+de piscine, projet courant.
+
+> Source : `src/db/schema/promo_config.schema.ts`,
+> `src/services/dto/promo_config.dto.ts`.
+
+## Schéma
+
+| Champ              | Type    | Contraintes | Description                              |
+| ------------------ | ------- | ----------- | ---------------------------------------- |
+| `key`              | text    | **PK**      | Identifiant libre (ex. `p1-2024`)        |
+| `eventId`          | integer | NOT NULL    | ID d'event 01 Edu                        |
+| `title`            | text    | NOT NULL    | Titre affiché                            |
+| `start`            | date    | NOT NULL    | Date de début                            |
+| `piscineJsStart`   | date    | nullable    | Début piscine JS                         |
+| `piscineJsEnd`     | date    | nullable    | Fin piscine JS                           |
+| `piscineRustStart` | date    | nullable    | Début piscine Rust                       |
+| `piscineRustEnd`   | date    | nullable    | Fin piscine Rust                         |
+| `end`              | date    | NOT NULL    | Date de fin                              |
+| `currentProject`   | text    | nullable    | Slug du projet courant                   |
+
+### Index
+
+- `promo_config_pkey` sur `key`
+
+## DTO
+
+### `CreatePromoConfigDTO`
+
+```ts
+{
+  key: string;
+  eventId: number;
+  title: string;
+  start: string;
+  piscineJsStart?: string;
+  piscineJsEnd?: string;
+  piscineRustStart?: string;
+  piscineRustEnd?: string;
+  end: string;
+  currentProject?: string;
+}
+```
+
+### `UpdatePromoConfigDTO`
+
+Tous les champs sauf `key` deviennent optionnels.
+
+## Endpoints liés
+
+- [CRUD `/api/v1/promo-configs`](/reference/promo-configs)

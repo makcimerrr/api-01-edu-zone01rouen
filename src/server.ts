@@ -11,15 +11,13 @@ app.use(oakCors({
     origin: ["https://admin-dashboard-blue-one.vercel.app", "http://localhost:3000"]
 }));
 
-// Route pour servir le fichier index.html et style.css
-app.use(async (ctx: { request: { url: { pathname: string; }; }; }, next: () => any) => {
+// Redirige la racine vers la documentation Nextra
+app.use(async (ctx, next) => {
     if (ctx.request.url.pathname === "/") {
-        await send(ctx, "index.html", {root: "./src/public"});
-    } else if (ctx.request.url.pathname === "/style.css") {
-        await send(ctx, "style.css", {root: "./src/public"});
-    } else {
-        await next();
+        ctx.response.redirect("/docs/");
+        return;
     }
+    await next();
 });
 
 // Documentation Nextra (build statique dans docs/out)

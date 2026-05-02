@@ -1,7 +1,38 @@
 ---
-title: discord-user
+title: DiscordUser
 ---
 
-# discord-user
+# DiscordUser
 
-> 🚧 À compléter à partir de `src/db/schema/discord_user.schema.ts` et `src/services/dto/discord_user.dto.ts`.
+Liaison login 01 Edu ↔ ID Discord.
+
+> Source : `src/db/schema/discord_users.schema.ts`,
+> `src/services/dto/discord_users.dto.ts`.
+
+## Schéma
+
+| Champ        | Type      | Contraintes              | Description                |
+| ------------ | --------- | ------------------------ | -------------------------- |
+| `id`         | serial    | **PK**                   | Auto-incrément             |
+| `login`      | varchar(100) | NOT NULL, UNIQUE      | Login 01 Edu               |
+| `discord_id` | varchar(30)  | NOT NULL              | Snowflake Discord          |
+| `created_at` | timestamp | NOT NULL, default `now()`| Date de création           |
+| `updated_at` | timestamp | NOT NULL, default `now()`| Date de dernière maj       |
+
+## DTO
+
+### `UpsertDiscordUserDTO`
+
+```ts
+{
+  login: string;
+  discord_id: string;
+}
+```
+
+> Le même DTO est utilisé pour la création et la mise à jour
+> (`PUT /api/v1/discord-users` est un upsert).
+
+## Endpoints liés
+
+- [CRUD `/api/v1/discord-users`](/reference/discord-users)

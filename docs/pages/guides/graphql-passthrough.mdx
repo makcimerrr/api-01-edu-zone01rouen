@@ -1,7 +1,87 @@
 ---
-title: graphql-passthrough
+title: Architecture GraphQL
 ---
 
-# graphql-passthrough
+# Comment l'API parle à 01 Edu
 
-> 🚧 Guide à rédiger.
+Cette API n'est pas un simple proxy GraphQL : c'est une **couche de
+projection** qui exécute des requêtes GraphQL prédéfinies vers le moteur
+Hasura de la plateforme 01 Edu et renvoie le résultat sous forme JSON
+structuré.
+
+## Le client GraphQL interne
+
+Le client est défini dans `src/services/graphql.ts` :
+
+```ts
+const client = await getClient();
+const data = await client.run(`
+  query {
+    user(where: { login: { _eq: "alice" } }) {
+      id
+      login
+    }
+  }
+`);
+```
+
+Sous le capot, il :
+
+1. **Demande un JWT** Hasura via le service d'auth 01 Edu
+   (`src/services/auth.ts`).
+2. Le **stocke** en mémoire (`config/storage.ts`).
+3. Le **rafraîchit automatiquement** avant expiration (`isExpired`).
+4. Envoie la requête à `https://${DOMAIN}/api/graphql-engine/v1/graphql`
+   avec `Authorization: Bearer <jwt>`.
+
+## Variables d'environnement
+
+| Variable        | Rôle                                                |
+| --------------- | --------------------------------------------------- |
+| `DOMAIN`        | Domaine 01 Edu (ex. `zone01normandie.org`)          |
+| `ACCESS_TOKEN`  | Token d'accès initial pour récupérer le JWT Hasura  |
+
+## Endpoints qui passent par GraphQL
+
+- [`/api/v1/users`](/reference/users) — `user { id, login }`
+- [`/api/v1/user-info/:username`](/reference/users) — détails d'un utilisateur
+- [`/api/v1/promotions/:eventId/students`](/reference/promotions) — `progress` filtré
+- [`/api/v1/promotions/:eventId/students/optionals`](/reference/promotions)
+- [`/api/v1/promotions/:eventId/students/additionals`](/reference/promotions)
+- [`/api/v1/specialties/:name/students`](/reference/specialty)
+- [`/api/v1/piscine/progress`](/reference/piscine) — `progress` (Piscine Go)
+- [`/api/v1/toad/sessions`](/reference/toad) — `toad_sessions`
+
+## Endpoints qui parlent à Postgres directement
+
+- Toute la famille [`/api/v1/discord/*`](/reference/discord) :
+  `discord_technologies`, `discord_config`, `forbidden_schools`,
+  `job_queries`.
+
+## Endpoints qui passent par Drizzle (ORM Postgres)
+
+- [`/api/v1/projects`](/reference/projects)
+- [`/api/v1/holidays`](/reference/holidays)
+- [`/api/v1/promo-configs`](/reference/promo-configs)
+- [`/api/v1/discord-users`](/reference/discord-users)
+- [`/api/v1/promotions`](/reference/promotions) (liste seulement)
+
+## Limitation à connaître
+
+Les requêtes GraphQL sont construites par **interpolation de strings** (cf.
+`src/api/v1/promotion.ts`). Les listes de projets sont injectées via
+`JSON.stringify` puis passées à `_in:`. Tout ajout d'endpoint qui accepte
+de l'input utilisateur **doit** valider strictement les entrées avant
+interpolation, ou idéalement utiliser des **variables GraphQL** plutôt que
+de la concaténation.
+
+## En cas d'erreur GraphQL
+
+Le client lève une exception si Hasura renvoie `errors[0].message`. Côté
+handler, ça se traduit en :
+
+```json
+{ "error": "..." }
+```
+
+avec un `500`. Vérifier le log serveur pour le message Hasura précis.

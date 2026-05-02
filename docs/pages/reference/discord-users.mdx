@@ -1,7 +1,95 @@
 ---
-title: discord-users
+title: Discord users
 ---
 
-# discord-users
+import { Endpoint } from "../../components/Endpoint";
 
-> 🚧 Page à compléter — voir `src/api/v1/discord_users.ts` pour les handlers.
+# Discord users
+
+Liaison entre le `login` 01 Edu d'un apprenant et son `discord_id`. Permet
+au bot Discord de cibler un message individuel (DM, mention, ping ciblé).
+
+> Source : `src/api/v1/discord_users.ts`,
+> `src/db/schema/discord_users.schema.ts`,
+> `src/services/dto/discord_users.dto.ts`.
+
+Voir aussi le [schéma DiscordUser](/schemas/discord-user).
+
+---
+
+## Lister tous les liens
+
+<Endpoint method="GET" path="/api/v1/discord-users" />
+
+### Réponse `200`
+
+```json
+[
+  {
+    "id": 1,
+    "login": "alice",
+    "discord_id": "1234567890",
+    "created_at": "2024-09-12T10:00:00.000Z",
+    "updated_at": "2024-09-12T10:00:00.000Z"
+  }
+]
+```
+
+---
+
+## Récupérer le lien d'un apprenant
+
+<Endpoint method="GET" path="/api/v1/discord-users/:login" />
+
+| Nom     | Type   | Localisation | Description           |
+| ------- | ------ | ------------ | --------------------- |
+| `login` | string | path         | Login 01 Edu          |
+
+### Erreurs
+
+| Code | Cause                       |
+| ---- | --------------------------- |
+| 404  | Aucun lien pour ce `login`  |
+
+---
+
+## Créer / mettre à jour un lien (upsert)
+
+<Endpoint method="PUT" path="/api/v1/discord-users" />
+
+Insère le lien s'il n'existe pas, le met à jour sinon. La clé d'unicité est
+le `login`.
+
+### Body (JSON)
+
+```json
+{
+  "login": "alice",
+  "discord_id": "1234567890"
+}
+```
+
+| Champ        | Type   | Requis | Description       |
+| ------------ | ------ | ------ | ----------------- |
+| `login`      | string | ✅     | Login 01 Edu      |
+| `discord_id` | string | ✅     | ID Discord (snowflake) |
+
+### Réponse `200`
+
+L'objet créé ou mis à jour.
+
+---
+
+## Supprimer un lien
+
+<Endpoint method="DELETE" path="/api/v1/discord-users/:login" />
+
+### Réponse
+
+`204 No Content`.
+
+### Erreurs
+
+| Code | Cause                       |
+| ---- | --------------------------- |
+| 404  | Aucun lien pour ce `login`  |

@@ -1,7 +1,117 @@
 ---
-title: specialty
+title: Specialty
 ---
 
-# specialty
+import { Endpoint } from "../../components/Endpoint";
 
-> 🚧 Page à compléter — voir `src/api/v1/specialty.ts` pour les handlers.
+# Specialty
+
+Suivi de la progression des apprenants par **spécialité** (séquence ordonnée
+de projets). Une spécialité = une liste de projets à terminer dans un ordre
+défini.
+
+> Source : `src/api/v1/specialty.ts`,
+> `src/services/projects.ts` (constante `specialties`).
+
+---
+
+## Lister les spécialités disponibles
+
+<Endpoint method="GET" path="/api/v1/specialties" />
+
+### Réponse `200`
+
+```json
+[
+  {
+    "name": "cybersecurity",
+    "totalProjects": 11,
+    "projects": [
+      "Passive", "Inspector-Image", "Active", "Local",
+      "Web-Hack", "Injector", "Hole-In-Bin", "Mal-Track",
+      "Evasion", "Obfuscator", "Malware"
+    ]
+  },
+  {
+    "name": "ai",
+    "totalProjects": 5,
+    "projects": [
+      "Kaggle-Titanic", "NLP-Scrapper", "Emotions-Detector",
+      "SP500-Strategies", "Credit-Scoring"
+    ]
+  }
+]
+```
+
+### Spécialités existantes
+
+| Slug                  | Nb de projets |
+| --------------------- | ------------- |
+| `cybersecurity`       | 11            |
+| `ai`                  | 5             |
+| `blockchain`          | 4             |
+| `devops`              | 7             |
+| `game`                | 9             |
+| `mobile-application`  | 6             |
+
+---
+
+## Étudiants d'une spécialité
+
+<Endpoint method="GET" path="/api/v1/specialties/:name/students" />
+
+Renvoie la liste des étudiants ayant un avancement détecté sur les projets
+de la spécialité, avec leur **progression calculée** (projet courant inclus).
+
+### Paramètres
+
+| Nom       | Type   | Localisation | Description                                         |
+| --------- | ------ | ------------ | --------------------------------------------------- |
+| `name`    | string | path         | Slug de la spécialité (cf. tableau ci-dessus)       |
+| `eventId` | number | query        | (optionnel) Filtre sur l'`event.id` 01 Edu          |
+
+### Réponse `200`
+
+```json
+{
+  "specialty": "cybersecurity",
+  "totalProjects": 11,
+  "projectsList": ["Passive", "Inspector-Image", "..."],
+  "studentsCount": 7,
+  "students": [
+    {
+      "login": "alice",
+      "firstName": "Alice",
+      "lastName": "Martin",
+      "completedProjects": ["Passive", "Inspector-Image"],
+      "currentProject": "Active",
+      "progression": { "current": 3, "total": 11 },
+      "projects": [
+        { "name": "Passive", "grade": 1, "status": "finished" },
+        { "name": "Inspector-Image", "grade": 1, "status": "finished" },
+        { "name": "Active", "grade": null, "status": "working" }
+      ]
+    }
+  ]
+}
+```
+
+### Calcul de la progression
+
+- `completedProjects` = projets terminés avec `status=finished` ET `grade > 0`.
+- `currentProject` = dernier projet rencontré avec `status ∈ {working, setup, audit}`.
+- `progression.current` = `len(completedProjects) + (1 si currentProject)` (cap à `totalProjects`).
+
+### Erreurs
+
+| Code | Cause                                                     |
+| ---- | --------------------------------------------------------- |
+| 400  | `name` absent                                             |
+| 404  | Spécialité inconnue (le payload renvoie la liste valide)  |
+| 500  | Erreur GraphQL 01 Edu                                     |
+
+### Exemple
+
+```bash
+curl https://api.zone01normandie.org/api/v1/specialties/cybersecurity/students?eventId=72
+```

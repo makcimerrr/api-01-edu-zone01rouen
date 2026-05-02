@@ -1,7 +1,95 @@
 ---
-title: holidays
+title: Holidays
 ---
 
-# holidays
+import { Endpoint } from "../../components/Endpoint";
 
-> 🚧 Page à compléter — voir `src/api/v1/holidays.ts` pour les handlers.
+# Holidays
+
+Périodes de vacances scolaires (label + date de début + date de fin),
+utilisées par les outils de calcul de progression pour ne pas pénaliser
+les étudiants pendant ces fenêtres.
+
+> Source : `src/api/v1/holidays.ts`, `src/db/schema/holidays.schema.ts`,
+> `src/services/dto/holidays.dto.ts`.
+
+Voir aussi le [schéma Holiday](/schemas/holiday).
+
+---
+
+## Lister les vacances
+
+<Endpoint method="GET" path="/api/v1/holidays" />
+
+### Réponse `200`
+
+```json
+[
+  {
+    "id": 1,
+    "label": "Vacances de Noël 2024",
+    "start": "2024-12-21",
+    "end": "2025-01-05"
+  }
+]
+```
+
+---
+
+## Récupérer une période
+
+<Endpoint method="GET" path="/api/v1/holidays/:id" />
+
+| Nom  | Type   | Localisation | Description           |
+| ---- | ------ | ------------ | --------------------- |
+| `id` | number | path         | ID de la période      |
+
+### Erreurs
+
+| Code | Cause              |
+| ---- | ------------------ |
+| 404  | Période introuvable |
+
+---
+
+## Créer une période
+
+<Endpoint method="POST" path="/api/v1/holidays" />
+
+### Body (JSON)
+
+```json
+{
+  "label": "Vacances de printemps 2025",
+  "start": "2025-04-19",
+  "end": "2025-05-04"
+}
+```
+
+| Champ   | Type   | Requis | Description           |
+| ------- | ------ | ------ | --------------------- |
+| `label` | string | ✅     | Nom affiché            |
+| `start` | date   | ✅     | Début (`YYYY-MM-DD`)   |
+| `end`   | date   | ✅     | Fin (`YYYY-MM-DD`)     |
+
+### Réponse `201`
+
+L'objet créé.
+
+---
+
+## Mettre à jour une période
+
+<Endpoint method="PUT" path="/api/v1/holidays/:id" />
+
+Tous les champs du body sont optionnels (cf. `UpdateHolidayDTO`).
+
+---
+
+## Supprimer une période
+
+<Endpoint method="DELETE" path="/api/v1/holidays/:id" />
+
+### Réponse
+
+`204 No Content`.

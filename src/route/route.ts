@@ -126,18 +126,6 @@ async function loadDiscordController() {
     }
 }
 
-// Route d'accueil de l'API
-router.get("/", (ctx: {
-    response: { body: { message: string; documentation: string; status: string; version: string; }; };
-}) => {
-    ctx.response.body = {
-        message: "Bienvenue sur l'API 01 Edu!",
-        documentation: "https://zone01normandie.org/docs",
-        status: "OK",
-        version: API_VERSION,
-    };
-});
-
 async function loadToadController() {
     try {
         router.get(`/${API_BASE_PATH}/${API_VERSION}/toad/sessions`, getToadSessionsHandler);

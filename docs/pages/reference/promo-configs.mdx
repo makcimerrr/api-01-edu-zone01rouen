@@ -1,7 +1,136 @@
 ---
-title: promo-configs
+title: Promo configs
 ---
 
-# promo-configs
+import { Endpoint } from "../../components/Endpoint";
 
-> 🚧 Page à compléter — voir `src/api/v1/promo_configs.ts` pour les handlers.
+# Promo configs
+
+Configuration métier d'une promotion : titre, dates de début/fin,
+fenêtres de piscine JS/Rust, projet courant, et l'`eventId` 01 Edu associé.
+
+La clé primaire est un `key` libre (ex. `p1-2024`, `p2-2023`).
+
+> Source : `src/api/v1/promo_config.ts`,
+> `src/db/schema/promo_config.schema.ts`,
+> `src/services/dto/promo_config.dto.ts`.
+
+Voir aussi le [schéma PromoConfig](/schemas/promo-config).
+
+---
+
+## Lister toutes les configs
+
+<Endpoint method="GET" path="/api/v1/promo-configs" />
+
+### Réponse `200`
+
+```json
+[
+  {
+    "key": "p1-2024",
+    "eventId": 72,
+    "title": "Promotion 1 — 2024",
+    "start": "2024-09-02",
+    "piscineJsStart": "2024-11-04",
+    "piscineJsEnd": "2024-11-29",
+    "piscineRustStart": "2025-03-03",
+    "piscineRustEnd": "2025-03-28",
+    "end": "2026-07-31",
+    "currentProject": "graphql"
+  }
+]
+```
+
+---
+
+## Récupérer une config
+
+<Endpoint method="GET" path="/api/v1/promo-configs/:key" />
+
+| Nom   | Type   | Localisation | Description                       |
+| ----- | ------ | ------------ | --------------------------------- |
+| `key` | string | path         | Clé de la config (ex. `p1-2024`)  |
+
+### Erreurs
+
+| Code | Cause              |
+| ---- | ------------------ |
+| 404  | `key` introuvable  |
+
+---
+
+## Créer une config
+
+<Endpoint method="POST" path="/api/v1/promo-configs" />
+
+### Body (JSON)
+
+```json
+{
+  "key": "p1-2025",
+  "eventId": 85,
+  "title": "Promotion 1 — 2025",
+  "start": "2025-09-01",
+  "piscineJsStart": "2025-11-03",
+  "piscineJsEnd": "2025-11-28",
+  "piscineRustStart": "2026-03-02",
+  "piscineRustEnd": "2026-03-27",
+  "end": "2027-07-30",
+  "currentProject": "lets-travel"
+}
+```
+
+| Champ              | Type   | Requis | Description                            |
+| ------------------ | ------ | ------ | -------------------------------------- |
+| `key`              | string | ✅     | Identifiant unique                      |
+| `eventId`          | number | ✅     | ID d'event 01 Edu                       |
+| `title`            | string | ✅     | Titre affiché                           |
+| `start`            | date   | ✅     | Date de début (`YYYY-MM-DD`)            |
+| `end`              | date   | ✅     | Date de fin (`YYYY-MM-DD`)              |
+| `piscineJsStart`   | date   | ⛔︎     | Début piscine JS                        |
+| `piscineJsEnd`     | date   | ⛔︎     | Fin piscine JS                          |
+| `piscineRustStart` | date   | ⛔︎     | Début piscine Rust                      |
+| `piscineRustEnd`   | date   | ⛔︎     | Fin piscine Rust                        |
+| `currentProject`   | string | ⛔︎     | Projet courant (slug en minuscules)     |
+
+### Réponse `201`
+
+L'objet créé, identique à la requête `GET /:key`.
+
+### Erreurs
+
+| Code | Cause                                      |
+| ---- | ------------------------------------------ |
+| 409  | Une config avec cette `key` existe déjà    |
+
+---
+
+## Mettre à jour une config
+
+<Endpoint method="PUT" path="/api/v1/promo-configs/:key" />
+
+Tous les champs du body sont optionnels (cf. `UpdatePromoConfigDTO`). La
+clé n'est pas modifiable — supprimer puis recréer si besoin.
+
+### Erreurs
+
+| Code | Cause              |
+| ---- | ------------------ |
+| 404  | `key` introuvable  |
+
+---
+
+## Supprimer une config
+
+<Endpoint method="DELETE" path="/api/v1/promo-configs/:key" />
+
+### Réponse
+
+`204 No Content`.
+
+### Erreurs
+
+| Code | Cause              |
+| ---- | ------------------ |
+| 404  | `key` introuvable  |

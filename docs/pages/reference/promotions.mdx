@@ -1,7 +1,170 @@
 ---
-title: promotions
+title: Promotions
 ---
 
-# promotions
+import { Endpoint } from "../../components/Endpoint";
 
-> 🚧 Page à compléter — voir `src/api/v1/promotions.ts` pour les handlers.
+# Promotions
+
+Lister les promotions actives et calculer la progression de leurs apprenants
+sur les projets du tronc commun, optionnels et additionnels.
+
+> Source : `src/api/v1/promotion.ts`, `src/api/v1/additional.ts`,
+> `src/services/promotion.service.ts`.
+
+---
+
+## Lister les promotions actives
+
+<Endpoint method="GET" path="/api/v1/promotions" />
+
+Renvoie l'ensemble des promotions **non archivées**, lues depuis la table
+`promotions` (Drizzle / Postgres).
+
+### Réponse `200`
+
+```json
+[
+  {
+    "promoId": "p1-2024",
+    "name": "Promotion 1 — 2024",
+    "isArchived": false,
+    "archivedAt": null,
+    "archivedReason": null
+  }
+]
+```
+
+### Erreurs
+
+| Code | Cause                               |
+| ---- | ----------------------------------- |
+| 500  | Erreur d'accès à la base Postgres   |
+
+### Exemple
+
+```bash
+curl https://api.zone01normandie.org/api/v1/promotions
+```
+
+---
+
+## Progression — projets du tronc commun
+
+<Endpoint method="GET" path="/api/v1/promotions/:eventId/students" />
+
+Liste, pour un `eventId` donné, l'avancement de chaque étudiant **sur les
+projets du tronc commun** (`projects` dans `src/services/projects.ts`,
+ex. `Lets-Travel`, `Travel-Plan`, `Buy-01`, `Forum`, `GraphQL`…).
+
+### Paramètres
+
+| Nom       | Type   | Localisation | Description                          |
+| --------- | ------ | ------------ | ------------------------------------ |
+| `eventId` | number | path         | ID d'évènement 01 Edu (`event.id`)   |
+
+### Réponse `200`
+
+```json
+{
+  "progress": [
+    {
+      "user": {
+        "login": "alice",
+        "firstName": "Alice",
+        "lastName": "Martin"
+      },
+      "grade": 1,
+      "group": {
+        "status": "finished",
+        "id": 1234,
+        "captainLogin": "alice",
+        "members": [{ "userLogin": "alice" }, { "userLogin": "bob" }],
+        "createdAt": "2024-09-12T10:00:00.000Z",
+        "startedWorkingAt": "2024-09-12T10:30:00.000Z",
+        "auditors": [{ "createdAt": "…", "auditedAt": "…" }],
+        "results": [{ "createdAt": "…" }]
+      },
+      "object": { "name": "lets-travel" }
+    }
+  ]
+}
+```
+
+### Erreurs
+
+| Code | Cause                  |
+| ---- | ---------------------- |
+| 400  | `eventId` absent       |
+| 500  | Erreur GraphQL 01 Edu  |
+
+### Exemple
+
+```bash
+curl https://api.zone01normandie.org/api/v1/promotions/72/students
+```
+
+---
+
+## Progression — projets optionnels
+
+<Endpoint method="GET" path="/api/v1/promotions/:eventId/students/optionals" />
+
+Identique à l'endpoint précédent mais filtre sur la liste `optionalProjects`
+(ex. `Forum-Authentication`, `Make-Your-Game-History`,
+`Groupie-Tracker-Search-Bar`…).
+
+### Paramètres
+
+Même que `students`.
+
+### Réponse `200`
+
+Mêmes champs que `students`. Voir aussi
+[Suivi de progression](/guides/tracking-progression).
+
+---
+
+## Progression — projets additionnels
+
+<Endpoint method="GET" path="/api/v1/promotions/:eventId/students/additionals" />
+
+Filtre sur la liste `additionalProjects` (Push-Swap, Tetris-Optimizer,
+projets de spécialité, ateliers softskills…).
+
+> ⚠️ Le payload **n'inclut pas** `firstName` / `lastName` (différence avec
+> les deux endpoints précédents).
+
+### Paramètres
+
+| Nom       | Type   | Localisation | Description           |
+| --------- | ------ | ------------ | --------------------- |
+| `eventId` | number | path         | ID d'évènement 01 Edu |
+
+### Réponse `200`
+
+```json
+{
+  "progress": [
+    {
+      "user": { "login": "alice" },
+      "grade": null,
+      "group": { "status": "working" },
+      "object": { "name": "push-swap" }
+    }
+  ]
+}
+```
+
+---
+
+## Statuts de groupe
+
+L'API ne renvoie que les groupes dans l'un de ces statuts :
+
+| Statut     | Signification                       |
+| ---------- | ----------------------------------- |
+| `setup`    | Groupe créé, projet pas démarré     |
+| `working`  | Groupe en train de coder            |
+| `audit`    | Groupe en attente d'audit           |
+| `finished` | Projet terminé (audit OK)           |

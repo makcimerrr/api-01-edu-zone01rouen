@@ -1,7 +1,45 @@
 ---
-title: holiday
+title: Holiday
 ---
 
-# holiday
+# Holiday
 
-> 🚧 À compléter à partir de `src/db/schema/holiday.schema.ts` et `src/services/dto/holiday.dto.ts`.
+Période de vacances scolaires.
+
+> Source : `src/db/schema/holidays.schema.ts`,
+> `src/services/dto/holidays.dto.ts`.
+
+## Schéma
+
+| Champ   | Type   | Contraintes | Description                |
+| ------- | ------ | ----------- | -------------------------- |
+| `id`    | serial | **PK**      | Auto-incrément             |
+| `label` | text   | NOT NULL    | Nom affiché                |
+| `start` | date   | NOT NULL    | Date de début (`YYYY-MM-DD`) |
+| `end`   | date   | NOT NULL    | Date de fin (`YYYY-MM-DD`)   |
+
+## DTO
+
+### `CreateHolidayDTO`
+
+```ts
+{
+  label: string;
+  start: string; // yyyy-mm-dd
+  end: string;   // yyyy-mm-dd
+}
+```
+
+### `UpdateHolidayDTO`
+
+```ts
+{
+  label?: string;
+  start?: string;
+  end?: string;
+}
+```
+
+## Endpoints liés
+
+- [CRUD `/api/v1/holidays`](/reference/holidays)

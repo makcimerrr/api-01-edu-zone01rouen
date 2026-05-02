@@ -1,7 +1,157 @@
 ---
-title: discord
+title: Discord
 ---
 
-# discord
+import { Endpoint } from "../../components/Endpoint";
 
-> 🚧 Page à compléter — voir `src/api/v1/discord.ts` pour les handlers.
+# Discord
+
+Endpoints destinés au bot Discord interne :
+- catalogue des technologies tagables (`discord_technologies`),
+- accès à la table `discord_config` (IDs de salons, rôles, etc.),
+- liste des écoles interdites (`forbidden_schools`),
+- modèles de requêtes d'emploi (`job_queries`).
+
+> Source : `src/api/v1/discord.ts`. Toutes les requêtes attaquent
+> directement Postgres via `deno.land/x/postgres`.
+
+---
+
+## Lister les technologies
+
+<Endpoint method="GET" path="/api/v1/discord/technologies" />
+
+### Réponse `200`
+
+```json
+{
+  "success": true,
+  "technologies": [
+    { "id": 1, "name": "Go" },
+    { "id": 2, "name": "Rust" }
+  ]
+}
+```
+
+---
+
+## Récupérer un champ de configuration
+
+<Endpoint method="GET" path="/api/v1/discord/:name/config" />
+
+Lit une colonne ciblée dans `discord_config`. Le nom est validé contre une
+**liste blanche** pour empêcher l'injection SQL.
+
+### Champs autorisés
+
+```
+channel_inter_promo
+forum_channel_id
+forum_channel_id_cdi
+role_ping_cdi
+role_ping_alternance
+guild_id
+role_p1_2023
+role_p2_2023
+role_p1_2024
+role_help
+channel_progress_p1_2022
+channel_progress_p1_2023
+channel_progress_p2_2023
+channel_progress_p1_2024
+channel_progress_p1_2025
+```
+
+### Réponse `200`
+
+```json
+{
+  "success": true,
+  "name": "guild_id",
+  "value": 1234567890123456789
+}
+```
+
+### Erreurs
+
+| Code | Cause                                    |
+| ---- | ---------------------------------------- |
+| 400  | `name` absent ou hors liste blanche      |
+| 500  | Erreur Postgres                          |
+
+### Exemple
+
+```bash
+curl https://api.zone01normandie.org/api/v1/discord/guild_id/config
+```
+
+---
+
+## Récupérer la configuration complète
+
+<Endpoint method="GET" path="/api/v1/discord/config/full" />
+
+Renvoie l'intégralité de la première ligne de `discord_config`. Les `BIGINT`
+sont automatiquement convertis en `number` pour la sérialisation JSON.
+
+### Réponse `200`
+
+```json
+{
+  "success": true,
+  "config": {
+    "guild_id": 1234567890123456789,
+    "forum_channel_id": 9876543210,
+    "role_ping_cdi": 555,
+    "channel_progress_p1_2024": 777
+  }
+}
+```
+
+### Erreurs
+
+| Code | Cause                              |
+| ---- | ---------------------------------- |
+| 404  | `discord_config` est vide          |
+| 500  | Erreur Postgres                    |
+
+---
+
+## Lister les écoles interdites
+
+<Endpoint method="GET" path="/api/v1/discord/forbidden-schools" />
+
+### Réponse `200`
+
+```json
+{
+  "success": true,
+  "schools": [
+    { "id": 1, "name": "École X" }
+  ]
+}
+```
+
+---
+
+## Lister les requêtes d'emploi
+
+<Endpoint method="GET" path="/api/v1/discord/job-queries" />
+
+Renvoie tous les enregistrements de la table `job_queries` (templates de
+recherches LinkedIn / Welcome to the Jungle / Indeed utilisés par le bot).
+
+### Réponse `200`
+
+```json
+{
+  "success": true,
+  "queries": [
+    {
+      "id": 1,
+      "query": "développeur fullstack alternance Rouen",
+      "...": "…"
+    }
+  ]
+}
+```

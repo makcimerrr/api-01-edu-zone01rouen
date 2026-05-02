@@ -1,7 +1,104 @@
 ---
-title: projects
+title: Projects
 ---
 
-# projects
+import { Endpoint } from "../../components/Endpoint";
 
-> 🚧 Page à compléter — voir `src/api/v1/projects.ts` pour les handlers.
+# Projects
+
+Catalogue interne des projets pédagogiques (nom, catégorie, durée
+prévisionnelle en semaines, ordre d'affichage). Stocké dans la table
+`projects` (Drizzle / Postgres).
+
+> Source : `src/api/v1/projects.ts`, `src/db/schema/projects.schema.ts`,
+> `src/services/dto/projects.dto.ts`.
+
+Voir aussi le [schéma Project](/schemas/project).
+
+---
+
+## Lister les projets
+
+<Endpoint method="GET" path="/api/v1/projects" />
+
+### Réponse `200`
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Lets-Travel",
+    "projectTimeWeek": 2,
+    "category": "tronc-commun",
+    "sortIndex": 10
+  }
+]
+```
+
+---
+
+## Récupérer un projet
+
+<Endpoint method="GET" path="/api/v1/projects/:id" />
+
+| Nom  | Type   | Localisation | Description       |
+| ---- | ------ | ------------ | ----------------- |
+| `id` | number | path         | ID du projet      |
+
+### Erreurs
+
+| Code | Cause                  |
+| ---- | ---------------------- |
+| 404  | Projet introuvable     |
+
+---
+
+## Créer un projet
+
+<Endpoint method="POST" path="/api/v1/projects" />
+
+### Body (JSON)
+
+```json
+{
+  "name": "Smart-Road",
+  "projectTimeWeek": 2,
+  "category": "tronc-commun",
+  "sortIndex": 42
+}
+```
+
+| Champ             | Type   | Requis | Description                                    |
+| ----------------- | ------ | ------ | ---------------------------------------------- |
+| `name`            | string | ✅     | Nom du projet (kebab-case)                      |
+| `projectTimeWeek` | number | ✅     | Durée prévisionnelle en semaines                |
+| `category`        | string | ✅     | Catégorie libre (`tronc-commun`, `optional`, …) |
+| `sortIndex`       | number | ⛔︎     | Ordre d'affichage (défaut `0`)                  |
+
+### Réponse `201`
+
+L'objet créé.
+
+---
+
+## Mettre à jour un projet
+
+<Endpoint method="PUT" path="/api/v1/projects/:id" />
+
+Tous les champs du body sont optionnels (cf. `UpdateProjectDTO`).
+
+### Erreurs
+
+| Code | Cause                  |
+| ---- | ---------------------- |
+| 404  | Projet introuvable     |
+
+---
+
+## Supprimer un projet
+
+<Endpoint method="DELETE" path="/api/v1/projects/:id" />
+
+### Réponse
+
+`204 No Content`.

@@ -1,7 +1,49 @@
 ---
-title: promotion
+title: Promotion
 ---
 
-# promotion
+# Promotion
 
-> 🚧 À compléter à partir de `src/db/schema/promotion.schema.ts` et `src/services/dto/promotion.dto.ts`.
+Représente une promotion (ex. *Promotion 1 — 2024*). Stockée dans la table
+`promotions` (Drizzle / Postgres).
+
+> Source : `src/db/schema/promotion.schema.ts`,
+> `src/services/dto/promotion.dto.ts`.
+
+## Schéma
+
+| Champ            | Type      | Contraintes                | Description                          |
+| ---------------- | --------- | -------------------------- | ------------------------------------ |
+| `promoId`        | text      | **PK**                     | Identifiant libre (ex. `p1-2024`)    |
+| `name`           | text      | NOT NULL, UNIQUE           | Nom affiché                          |
+| `isArchived`     | boolean   | NOT NULL, default `false`  | Vrai si la promotion est archivée    |
+| `archivedAt`     | timestamp | nullable                   | Date d'archivage                     |
+| `archivedReason` | text      | nullable                   | Justification de l'archivage         |
+
+### Index
+
+- `promotions_is_archived_idx` sur `is_archived`
+- `unique_promo_name` (unique) sur `name`
+
+## DTO
+
+### `CreatePromotionDTO`
+
+```ts
+{
+  promoId: string;
+  name: string;
+}
+```
+
+### `ArchivePromotionDTO`
+
+```ts
+{
+  reason: string;
+}
+```
+
+## Endpoints liés
+
+- [`GET /api/v1/promotions`](/reference/promotions) — promotions actives.

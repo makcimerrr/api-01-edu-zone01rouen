@@ -1,7 +1,105 @@
 ---
-title: discord-bot-integration
+title: Intégration Discord
 ---
 
-# discord-bot-integration
+# Intégration Discord
 
-> 🚧 Guide à rédiger.
+Cette API expose toutes les briques nécessaires au bot Discord interne
+de Zone01 Rouen : configuration des salons et rôles, liaison
+login ↔ ID Discord, catalogues de technologies et templates de recherche
+d'emploi.
+
+## Bootstrap du bot
+
+Au démarrage, charge la config complète une seule fois :
+
+```bash
+curl /api/v1/discord/config/full
+```
+
+```json
+{
+  "success": true,
+  "config": {
+    "guild_id": 1234567890123456789,
+    "forum_channel_id": 9876543210,
+    "role_ping_cdi": 555,
+    "channel_progress_p1_2024": 777
+  }
+}
+```
+
+> Les `BIGINT` Postgres sont convertis automatiquement en `number` JS, donc
+> directement utilisables dans `client.channels.fetch(id)`.
+
+## Récupérer un seul champ
+
+Si tu n'as besoin que d'un canal ou rôle précis :
+
+```bash
+curl /api/v1/discord/role_ping_cdi/config
+# → { "success": true, "name": "role_ping_cdi", "value": 555 }
+```
+
+> ⚠️ Le `name` est validé contre une **liste blanche** (cf.
+> [Discord — `:name/config`](/reference/discord)). Utiliser un champ hors
+> liste renvoie `400`.
+
+## Lier un apprenant à son compte Discord
+
+Quand un apprenant tape `/link <login>` dans Discord :
+
+```bash
+curl -X PUT /api/v1/discord-users \
+     -H "Content-Type: application/json" \
+     -d '{ "login": "alice", "discord_id": "1234567890" }'
+```
+
+C'est un **upsert** — la même requête fonctionne pour créer ou mettre à
+jour. Pour résoudre dans l'autre sens (login → ID Discord) :
+
+```bash
+curl /api/v1/discord-users/alice
+```
+
+## Mention ciblée
+
+Combiner les deux endpoints précédents permet d'envoyer un message ciblé :
+
+1. Lister les apprenants en retard via [`/promotions/:eventId/students`](/reference/promotions).
+2. Pour chaque apprenant, résoudre son ID Discord via `/discord-users/:login`.
+3. Envoyer un DM ou un ping dans le salon `channel_progress_p1_2024`.
+
+## Tags & technologies
+
+Pour les commandes de tagging (ex. `/tech`) :
+
+```bash
+curl /api/v1/discord/technologies
+```
+
+```json
+{
+  "success": true,
+  "technologies": [
+    { "id": 1, "name": "Go" },
+    { "id": 2, "name": "Rust" }
+  ]
+}
+```
+
+## Templates de requêtes d'emploi
+
+Pour les commandes d'agrégation d'offres (ex. `/job`) :
+
+```bash
+curl /api/v1/discord/job-queries
+```
+
+## Écoles interdites
+
+Liste utilisée par les commandes anti-spam / vérification d'inscription :
+
+```bash
+curl /api/v1/discord/forbidden-schools
+```

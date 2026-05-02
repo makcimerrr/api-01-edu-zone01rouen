@@ -1,7 +1,49 @@
 ---
-title: project
+title: Project
 ---
 
-# project
+# Project
 
-> 🚧 À compléter à partir de `src/db/schema/project.schema.ts` et `src/services/dto/project.dto.ts`.
+Catalogue local des projets pédagogiques (différent de la liste hardcodée
+dans `src/services/projects.ts` utilisée par les filtres GraphQL).
+
+> Source : `src/db/schema/projects.schema.ts`,
+> `src/services/dto/projects.dto.ts`.
+
+## Schéma
+
+| Champ             | Type    | Contraintes        | Description                           |
+| ----------------- | ------- | ------------------ | ------------------------------------- |
+| `id`              | serial  | **PK**             | Auto-incrément                        |
+| `name`            | text    | NOT NULL           | Nom du projet                         |
+| `projectTimeWeek` | integer | NOT NULL           | Durée prévisionnelle (en semaines)    |
+| `category`        | text    | NOT NULL           | Catégorie libre                       |
+| `sortIndex`       | integer | default `0`        | Ordre d'affichage                     |
+
+## DTO
+
+### `CreateProjectDTO`
+
+```ts
+{
+  name: string;
+  projectTimeWeek: number;
+  category: string;
+  sortIndex?: number;
+}
+```
+
+### `UpdateProjectDTO`
+
+```ts
+{
+  name?: string;
+  projectTimeWeek?: number;
+  category?: string;
+  sortIndex?: number;
+}
+```
+
+## Endpoints liés
+
+- [CRUD `/api/v1/projects`](/reference/projects)

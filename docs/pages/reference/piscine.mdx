@@ -1,7 +1,49 @@
 ---
-title: piscine
+title: Piscine
 ---
 
-# piscine
+import { Endpoint } from "../../components/Endpoint";
 
-> 🚧 Page à compléter — voir `src/api/v1/piscine.ts` pour les handlers.
+# Piscine
+
+Avancement de tous les apprenants sur l'objet `Piscine Go` (sélection
+d'entrée). Renvoie le grade obtenu et la date de l'événement de chaque
+piscine où l'apprenant est passé.
+
+> Source : `src/api/v1/piscine.ts`. Données via GraphQL 01 Edu
+> (`progress` filtré sur `object.name == "Piscine Go"`).
+
+---
+
+## Avancement Piscine Go
+
+<Endpoint method="GET" path="/api/v1/piscine/progress" />
+
+### Réponse `200`
+
+```json
+{
+  "progress": [
+    {
+      "event": {
+        "path": "/zone01rouen/piscine-go-08-2024",
+        "createdAt": "2024-08-01T08:00:00Z"
+      },
+      "user": { "login": "alice" },
+      "grade": 1
+    }
+  ]
+}
+```
+
+### Erreurs
+
+| Code | Cause                  |
+| ---- | ---------------------- |
+| 500  | Erreur GraphQL 01 Edu  |
+
+### Exemple
+
+```bash
+curl https://api.zone01normandie.org/api/v1/piscine/progress
+```

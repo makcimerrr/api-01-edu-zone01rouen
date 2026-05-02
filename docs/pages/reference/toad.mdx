@@ -1,7 +1,57 @@
 ---
-title: toad
+title: Toad
 ---
 
-# toad
+import { Endpoint } from "../../components/Endpoint";
 
-> 🚧 Page à compléter — voir `src/api/v1/toad.ts` pour les handlers.
+# Toad
+
+Sessions Toad (challenges techniques de pré-sélection / recrutement Zone01).
+Renvoie pour chaque candidat la liste des jeux passés et son **meilleur
+niveau atteint** par jeu.
+
+> Source : `src/api/v1/toad.ts`. Données lues via GraphQL 01 Edu
+> (`toad_sessions`).
+
+---
+
+## Lister les sessions Toad
+
+<Endpoint method="GET" path="/api/v1/toad/sessions" />
+
+### Réponse `200`
+
+```json
+{
+  "toad_sessions": [
+    {
+      "candidate": { "login": "alice" },
+      "games": [
+        {
+          "name": "Find Your Way",
+          "results": [{ "level": 7 }]
+        },
+        {
+          "name": "Logic Maze",
+          "results": [{ "level": 4 }]
+        }
+      ]
+    }
+  ]
+}
+```
+
+> `results` est limité à **1 entrée** triée par `level` décroissant — c'est
+> donc toujours le **meilleur niveau** atteint pour ce jeu.
+
+### Erreurs
+
+| Code | Cause                  |
+| ---- | ---------------------- |
+| 500  | Erreur GraphQL 01 Edu  |
+
+### Exemple
+
+```bash
+curl https://api.zone01normandie.org/api/v1/toad/sessions
+```

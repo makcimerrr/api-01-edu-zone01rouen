@@ -1,7 +1,76 @@
 ---
-title: tracking-progression
+title: Suivi de progression
 ---
 
-# tracking-progression
+# Suivi de progression d'une promotion
 
-> 🚧 Guide à rédiger.
+Cas d'usage : afficher pour une promotion son avancement complet — projets
+du tronc commun, optionnels, additionnels et spécialités — dans un dashboard
+ou un bot Discord.
+
+## 1. Récupérer l'`eventId` de la promotion
+
+Soit depuis la table de configuration interne :
+
+```bash
+curl https://api.zone01normandie.org/api/v1/promo-configs/p1-2024
+# → { "key": "p1-2024", "eventId": 72, ... }
+```
+
+L'`eventId` (ici `72`) correspond à l'`event.id` côté GraphQL 01 Edu.
+
+## 2. Charger les trois listes de progression
+
+Les trois endpoints suivants ont la même forme et peuvent être appelés en
+parallèle :
+
+```bash
+curl /api/v1/promotions/72/students             # tronc commun
+curl /api/v1/promotions/72/students/optionals   # optionnels
+curl /api/v1/promotions/72/students/additionals # additionnels
+```
+
+Chaque réponse retourne `{ progress: [...] }` où chaque entrée décrit un
+groupe-projet d'un apprenant (statut, date de début, audits, résultats).
+
+> ⚠️ La liste **additionals** ne contient pas `firstName` / `lastName`. Si
+> tu en as besoin pour l'affichage, croise avec le payload `students`
+> (tronc commun) qui les inclut.
+
+## 3. Agréger par étudiant
+
+Côté client, regroupe les entrées par `user.login` puis dérive :
+
+- **Projets terminés** : `entries.filter(e => e.group.status === "finished" && e.grade > 0).length`.
+- **Projet en cours** : dernière entrée avec `status ∈ {working, setup, audit}`.
+- **Pourcentage** : `terminés / nombre_total_de_projets_attendus`.
+
+> Cette logique est déjà implémentée côté serveur pour les **spécialités** —
+> voir [`/api/v1/specialties/:name/students`](/reference/specialty).
+
+## 4. Suivi par spécialité
+
+Pour les apprenants en phase de spécialisation :
+
+```bash
+curl /api/v1/specialties/cybersecurity/students?eventId=72
+```
+
+La réponse inclut directement `progression: { current, total }` par
+étudiant — pas besoin d'agrégation supplémentaire.
+
+## 5. Exclure les périodes de vacances
+
+Pour ne pas pénaliser un retard pendant une période scolaire fermée, charge
+la liste des vacances et soustrais-la lors du calcul de jours ouvrés :
+
+```bash
+curl /api/v1/holidays
+# → [{ "label": "...", "start": "2024-12-21", "end": "2025-01-05" }, ...]
+```
+
+## Statuts de groupe pris en compte
+
+Toutes les routes de progression filtrent uniquement sur les statuts
+`setup`, `working`, `audit`, `finished`. Un groupe abandonné (`failed`,
+`expired`) n'apparaît **pas** dans le payload.
