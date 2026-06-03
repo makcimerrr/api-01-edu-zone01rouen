@@ -11,6 +11,7 @@ Configurées dans `src/server.ts` via `oakCors` :
 ```ts
 app.use(oakCors({
   origin: [
+    "https://hub.zone01normandie.org",
     "https://admin-dashboard-blue-one.vercel.app",
     "http://localhost:3000",
   ],
@@ -19,7 +20,8 @@ app.use(oakCors({
 
 | Origine                                          | Usage                  |
 | ------------------------------------------------ | ---------------------- |
-| `https://admin-dashboard-blue-one.vercel.app`    | Dashboard d'admin prod |
+| `https://hub.zone01normandie.org`                | Dashboard d'admin prod (VPS) |
+| `https://admin-dashboard-blue-one.vercel.app`    | Ancienne URL (redirige vers hub) |
 | `http://localhost:3000`                          | Dev frontend local     |
 
 Toute autre origine sera bloquée par le navigateur (preflight `OPTIONS`

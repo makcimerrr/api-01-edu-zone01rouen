@@ -8,7 +8,7 @@ const app = new Application();
 
 // Enable CORS for the specified origin
 app.use(oakCors({
-    origin: ["https://admin-dashboard-blue-one.vercel.app", "http://localhost:3000"]
+    origin: ["https://hub.zone01normandie.org", "https://admin-dashboard-blue-one.vercel.app", "http://localhost:3000"]
 }));
 
 // Redirige la racine vers la documentation Nextra
