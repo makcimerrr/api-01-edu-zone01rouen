@@ -39,9 +39,11 @@ jobs:
       - name: Deploy to Deno Deploy
         env:
           DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
+          API_ADMIN_KEY: ${{ secrets.API_ADMIN_KEY }}
         run: |
           deployctl deploy \
             --project=api-zone01-rouen \
             --entrypoint=src/server.ts \
             --include=src,deps.ts,config,deno.json,deno.lock,docs/out \
+            --env=API_ADMIN_KEY=$API_ADMIN_KEY \
             --prod
