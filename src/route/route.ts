@@ -5,6 +5,7 @@ import {
     API_VERSION,
 } from "../../config/config.ts";
 import {checkToken} from "../utils/token.ts"
+import {requireApiKey} from "../utils/apiKey.ts"
 
 import {getUserInfo, getUsers} from "../api/v1/user.ts";
 import {getPromotionProgress, getPromotionsHandler, getOptionalPromotionProgress} from "../api/v1/promotion.ts";
@@ -74,14 +75,14 @@ async function loadPromotionController() {
         router.get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students`, getPromotionProgress)
             .get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:eventId/students/optionals`, getOptionalPromotionProgress)
             .get(`/${API_BASE_PATH}/${API_VERSION}/promotions`, getPromotionsHandler)
-            .post(`/${API_BASE_PATH}/${API_VERSION}/promotions`, createPromotionHandler)
+            .post(`/${API_BASE_PATH}/${API_VERSION}/promotions`, requireApiKey, createPromotionHandler)
             .get(`/${API_BASE_PATH}/${API_VERSION}/promotions/:promoId`, getPromotionByIdHandler)
-            .post(`/${API_BASE_PATH}/${API_VERSION}/promotions/:promoId/archive`, archivePromotionHandler)
+            .post(`/${API_BASE_PATH}/${API_VERSION}/promotions/:promoId/archive`, requireApiKey, archivePromotionHandler)
             .get(`/${API_BASE_PATH}/${API_VERSION}/promo-configs`, getPromoConfigsHandler)
             .get(`/${API_BASE_PATH}/${API_VERSION}/promo-configs/:key`, getPromoConfigHandler)
-            .post(`/${API_BASE_PATH}/${API_VERSION}/promo-configs`, createPromoConfigHandler)
-            .put(`/${API_BASE_PATH}/${API_VERSION}/promo-configs/:key`, updatePromoConfigHandler)
-            .delete(`/${API_BASE_PATH}/${API_VERSION}/promo-configs/:key`, deletePromoConfigHandler);
+            .post(`/${API_BASE_PATH}/${API_VERSION}/promo-configs`, requireApiKey, createPromoConfigHandler)
+            .put(`/${API_BASE_PATH}/${API_VERSION}/promo-configs/:key`, requireApiKey, updatePromoConfigHandler)
+            .delete(`/${API_BASE_PATH}/${API_VERSION}/promo-configs/:key`, requireApiKey, deletePromoConfigHandler);
     } catch (error) {
         console.error('Error loading promotion controller:', error);
     }
@@ -92,9 +93,9 @@ async function loadProjectsController() {
         router.get(`/${API_BASE_PATH}/${API_VERSION}/projects`, getProjectsHandler)
             .get(`/${API_BASE_PATH}/${API_VERSION}/projects/catalog`, getProjectsCatalog)
             .get(`/${API_BASE_PATH}/${API_VERSION}/projects/:id`, getProjectHandler)
-            .post(`/${API_BASE_PATH}/${API_VERSION}/projects`, createProjectHandler)
-            .put(`/${API_BASE_PATH}/${API_VERSION}/projects/:id`, updateProjectHandler)
-            .delete(`/${API_BASE_PATH}/${API_VERSION}/projects/:id`, deleteProjectHandler);
+            .post(`/${API_BASE_PATH}/${API_VERSION}/projects`, requireApiKey, createProjectHandler)
+            .put(`/${API_BASE_PATH}/${API_VERSION}/projects/:id`, requireApiKey, updateProjectHandler)
+            .delete(`/${API_BASE_PATH}/${API_VERSION}/projects/:id`, requireApiKey, deleteProjectHandler);
     } catch (error) {
         console.error('Error loading projects controller:', error);
     }
@@ -113,9 +114,9 @@ async function loadHolidaysController() {
     try {
         router.get(`/${API_BASE_PATH}/${API_VERSION}/holidays`, getHolidaysHandler)
             .get(`/${API_BASE_PATH}/${API_VERSION}/holidays/:id`, getHolidayHandler)
-            .post(`/${API_BASE_PATH}/${API_VERSION}/holidays`, createHolidayHandler)
-            .put(`/${API_BASE_PATH}/${API_VERSION}/holidays/:id`, updateHolidayHandler)
-            .delete(`/${API_BASE_PATH}/${API_VERSION}/holidays/:id`, deleteHolidayHandler);
+            .post(`/${API_BASE_PATH}/${API_VERSION}/holidays`, requireApiKey, createHolidayHandler)
+            .put(`/${API_BASE_PATH}/${API_VERSION}/holidays/:id`, requireApiKey, updateHolidayHandler)
+            .delete(`/${API_BASE_PATH}/${API_VERSION}/holidays/:id`, requireApiKey, deleteHolidayHandler);
     } catch (error) {
         console.error('Error loading holidays controller:', error);
     }
@@ -130,8 +131,8 @@ async function loadDiscordController() {
             .get(`/${API_BASE_PATH}/${API_VERSION}/discord/job-queries`, getJobQueries)
             .get(`/${API_BASE_PATH}/${API_VERSION}/discord-users`, getDiscordUsersHandler)
             .get(`/${API_BASE_PATH}/${API_VERSION}/discord-users/:login`, getDiscordUserHandler)
-            .put(`/${API_BASE_PATH}/${API_VERSION}/discord-users`, upsertDiscordUserHandler)
-            .delete(`/${API_BASE_PATH}/${API_VERSION}/discord-users/:login`, deleteDiscordUserHandler);
+            .put(`/${API_BASE_PATH}/${API_VERSION}/discord-users`, requireApiKey, upsertDiscordUserHandler)
+            .delete(`/${API_BASE_PATH}/${API_VERSION}/discord-users/:login`, requireApiKey, deleteDiscordUserHandler);
     } catch (error) {
         console.error('Error loading discord controller:', error);
     }
