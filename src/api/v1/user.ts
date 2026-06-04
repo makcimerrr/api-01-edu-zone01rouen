@@ -36,8 +36,8 @@ const getUserInfo = async (ctx: RouterContext) => {
     try {
         const client = await getClient();
         const query = `
-        query {
-          user(where: {login: {_eq: "${username}"}}) {
+        query ($username: String!) {
+          user(where: {login: {_eq: $username}}) {
             id
             login
             firstName
@@ -52,7 +52,7 @@ const getUserInfo = async (ctx: RouterContext) => {
           }
         }`;
 
-        const response = await client.run(query);
+        const response = await client.run(query, {username});
         ctx.response.status = 200;
         ctx.response.body = response;
     } catch (error) {

@@ -129,8 +129,8 @@ async function loadDiscordController() {
             .get(`/${API_BASE_PATH}/${API_VERSION}/discord/config/full`, getFullDiscordConfig)
             .get(`/${API_BASE_PATH}/${API_VERSION}/discord/forbidden-schools`, getForbiddenSchools)
             .get(`/${API_BASE_PATH}/${API_VERSION}/discord/job-queries`, getJobQueries)
-            .get(`/${API_BASE_PATH}/${API_VERSION}/discord-users`, getDiscordUsersHandler)
-            .get(`/${API_BASE_PATH}/${API_VERSION}/discord-users/:login`, getDiscordUserHandler)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/discord-users`, requireApiKey, getDiscordUsersHandler)
+            .get(`/${API_BASE_PATH}/${API_VERSION}/discord-users/:login`, requireApiKey, getDiscordUserHandler)
             .put(`/${API_BASE_PATH}/${API_VERSION}/discord-users`, requireApiKey, upsertDiscordUserHandler)
             .delete(`/${API_BASE_PATH}/${API_VERSION}/discord-users/:login`, requireApiKey, deleteDiscordUserHandler);
     } catch (error) {

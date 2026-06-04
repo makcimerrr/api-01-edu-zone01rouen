@@ -25,15 +25,22 @@ export const getSpecialtyStudents = async (ctx: RouterContext) => {
         return;
     }
 
+    if (eventId !== null && !Number.isInteger(Number(eventId))) {
+        ctx.response.status = 400;
+        ctx.response.body = {error: "Requête invalide : 'eventId' doit être un entier."};
+        return;
+    }
+
     try {
         const client = await getClient();
 
+        const queryArgs = eventId ? "($eventId: Int!)" : "";
         const eventFilter = eventId
-            ? `{ event: { id: { _eq: ${eventId} } } },`
+            ? `{ event: { id: { _eq: $eventId } } },`
             : "";
 
         const query = `
-        query {
+        query ${queryArgs} {
           progress(
             where: {
               _and: [
@@ -73,7 +80,7 @@ export const getSpecialtyStudents = async (ctx: RouterContext) => {
         }
       `;
 
-        const response = await client.run(query);
+        const response = await client.run(query, eventId ? {eventId: Number(eventId)} : undefined);
         const progressData = response?.progress ?? [];
 
         // Group progress entries by student
