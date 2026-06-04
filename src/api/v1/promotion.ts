@@ -28,16 +28,23 @@ const getPromotionProgress = async (ctx: RouterContext) => {
     };
     return;
   }
+  if (!Number.isInteger(Number(eventId))) {
+    ctx.response.status = 400;
+    ctx.response.body = {
+      error: "Requête invalide : 'eventId' doit être un entier.",
+    };
+    return;
+  }
   try {
     const client = await getClient();
     const query = `
-        query {
+        query ($eventId: Int!) {
           progress(
             where: {
               _and: [
                 { object: { name: { _in: ${JSON.stringify(projects.map((p) => p.toLowerCase()))} } } },
                 { group: { status: { _in: [finished, audit, setup, working] } } },
-                { event: { id: { _eq: ${eventId} } } }
+                { event: { id: { _eq: $eventId } } }
               ]
             }
           ) {
@@ -71,7 +78,7 @@ const getPromotionProgress = async (ctx: RouterContext) => {
         }
       `;
 
-    const response = await client.run(query);
+    const response = await client.run(query, {eventId: Number(eventId)});
     ctx.response.status = 200;
     ctx.response.body = response;
   } catch (error) {
@@ -93,17 +100,24 @@ const getOptionalPromotionProgress = async (ctx: RouterContext) => {
     };
     return;
   }
+  if (!Number.isInteger(Number(eventId))) {
+    ctx.response.status = 400;
+    ctx.response.body = {
+      error: "Requête invalide : 'eventId' doit être un entier.",
+    };
+    return;
+  }
 
   try {
     const client = await getClient();
     const query = `
-        query {
+        query ($eventId: Int!) {
           progress(
             where: {
               _and: [
                 { object: { name: { _in: ${JSON.stringify(optionalProjects.map(p => p.toLowerCase()))} } } },
                 { group: { status: { _in: [finished, audit, setup, working] } } },
-                { event: { id: { _eq: ${eventId} } } }
+                { event: { id: { _eq: $eventId } } }
               ]
             }
           ) {
@@ -137,7 +151,7 @@ const getOptionalPromotionProgress = async (ctx: RouterContext) => {
         }
       `;
 
-    const response = await client.run(query);
+    const response = await client.run(query, {eventId: Number(eventId)});
     ctx.response.status = 200;
     ctx.response.body = response;
   } catch (error) {
