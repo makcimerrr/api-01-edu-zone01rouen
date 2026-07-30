@@ -1,0 +1,24 @@
+services:
+  zone01-api:
+    # Image publiée par le CI sur GHCR (cf. .github/workflows/deploy.yml).
+    image: ghcr.io/makcimerrr/api-01-edu-zone01rouen:latest
+    container_name: zone01-api
+    restart: unless-stopped
+    # Secrets injectés comme vraies variables d'env (dispo dès le démarrage du
+    # process, avant que le code lise Deno.env) + montage .env pour le dotenv.
+    env_file: .env
+    volumes:
+      - ./.env:/app/.env:ro
+    # - nginx-network : joignable en interne par le dashboard/bot (http://zone01-api:8000)
+    # - postgres-production-network : accès DB interne `postgres-production`
+    #   (admin_dashboard). L'API n'utilise plus Neon.
+    # Service INTERNE : pas de VIRTUAL_HOST, non exposé publiquement.
+    networks:
+      - nginx-network
+      - postgres-production-network
+
+networks:
+  nginx-network:
+    external: true
+  postgres-production-network:
+    external: true
